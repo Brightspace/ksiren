@@ -1,4 +1,4 @@
-# [KSiren]
+# KSiren
 [BADGES:]
 [Bower version]
 [NPM version]
@@ -6,7 +6,7 @@
 [Dependency Status]
 [Coveralls]
 
-[A Kotlin library for parsing responses from Siren API endpoints and building Siren Action requests.]
+A Kotlin library for parsing responses from Siren API endpoints and building Siren Action requests.
 
 ## Quick start
 
