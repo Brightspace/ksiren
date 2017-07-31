@@ -8,6 +8,7 @@
 *.swp
 *.vi
 *.zip
+*.iml
 *~
 
 # OS or Editor folders
@@ -28,3 +29,4 @@ Thumbs.db
 bower_components
 node_modules
 coverage
+build
