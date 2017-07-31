@@ -25,11 +25,8 @@ class Link(
         val type: String?) : JsonSerializable {
 
     companion object {
-        fun fromJson(string: String): Link {
-            return fromJson(string.toJsonReader())
-        }
 
-        fun fromJson(reader: JsonReader): Link {
+        fun fromJson(reader: KSirenJsonReader): Link {
             val rels: MutableList<String> = mutableListOf()
             val classes: MutableList<String> = mutableListOf()
             var href: String = ""

@@ -24,11 +24,8 @@ class Field(
         val value: String?) {
 
     companion object {
-        fun fromJson(string: String): Field {
-            return fromJson(string.toJsonReader())
-        }
 
-        fun fromJson(reader: JsonReader): Field {
+        fun fromJson(reader: KSirenJsonReader): Field {
             var name: String = ""
             val classes: MutableList<String> = mutableListOf()
             var type: String = "text"

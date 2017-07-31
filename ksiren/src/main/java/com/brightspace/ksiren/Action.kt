@@ -28,11 +28,8 @@ class Action(
         val fields: List<Field> = listOf()) : JsonSerializable {
 
     companion object {
-        fun fromJson(string: String): Action {
-            return fromJson(string.toJsonReader())
-        }
 
-        fun fromJson(reader: JsonReader): Action {
+        fun fromJson(reader: KSirenJsonReader): Action {
             var name: String = ""
             val classes: MutableList<String> = mutableListOf()
             var method: String = "GET"

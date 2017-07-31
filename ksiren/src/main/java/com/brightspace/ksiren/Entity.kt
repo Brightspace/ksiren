@@ -27,11 +27,8 @@ class Entity(
         val title: String?) : JsonSerializable {
 
     companion object {
-        fun fromJson(string: String): Entity {
-            return fromJson(string.toJsonReader())
-        }
 
-        fun fromJson(reader: JsonReader): Entity {
+        fun fromJson(reader: KSirenJsonReader): Entity {
             val classes: MutableList<String> = mutableListOf()
             val properties: MutableMap<String, String> = mutableMapOf()
             val entities: MutableList<Entity> = mutableListOf()
