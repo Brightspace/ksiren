@@ -1,7 +1,5 @@
 package com.brightspace.ksiren
 
-import com.squareup.moshi.JsonReader
-
 /**
  * Copyright 2017 D2L Corporation
  *
@@ -18,54 +16,54 @@ import com.squareup.moshi.JsonReader
  * limitations under the License.
  */
 class Field(
-        val name: String,
-        val classes: List<String> = listOf(),
-        val type: String = "text",
-        val value: String?) {
+	val name: String,
+	val classes: List<String> = listOf(),
+	val type: String = "text",
+	val value: String?) {
 
-    companion object {
+	companion object {
 
-        fun fromJson(reader: KSirenJsonReader): Field {
-            var name: String = ""
-            val classes: MutableList<String> = mutableListOf()
-            var type: String = "text"
-            var value: String? = null
+		fun fromJson(reader: KSirenJsonReader): Field {
+			var name: String = ""
+			val classes: MutableList<String> = mutableListOf()
+			var type: String = "text"
+			var value: String? = null
 
-            reader.beginObject()
-            while (reader.hasNext()) {
-                when (reader.nextName()) {
-                    "name" -> {
-                        name = reader.nextString()
-                    }
-                    "class" -> {
-                        reader.beginArray()
-                        while (reader.hasNext()) {
-                            classes.add(reader.nextString())
-                        }
-                        reader.endArray()
-                    }
-                    "type" -> {
-                        type = reader.nextString()
-                    }
-                    "value" -> {
-                        value = reader.nextString()
-                    }
-                }
-            }
-            reader.endObject()
-            val finishedField: Field = Field(name, classes, type, value)
-            return validate(finishedField)
-        }
+			reader.beginObject()
+			while (reader.hasNext()) {
+				when (reader.nextName()) {
+					"name" -> {
+						name = reader.nextString()
+					}
+					"class" -> {
+						reader.beginArray()
+						while (reader.hasNext()) {
+							classes.add(reader.nextString())
+						}
+						reader.endArray()
+					}
+					"type" -> {
+						type = reader.nextString()
+					}
+					"value" -> {
+						value = reader.nextString()
+					}
+				}
+			}
+			reader.endObject()
+			val finishedField: Field = Field(name, classes, type, value)
+			return validate(finishedField)
+		}
 
-        fun validate(obj: Field): Field {
-            if (obj.name == "") {
-                throw KSirenException.ValidationException("Field parsing failed, missing name value.")
-            }
-            return obj
-        }
-    }
+		fun validate(obj: Field): Field {
+			if (obj.name == "") {
+				throw KSirenException.ValidationException("Field parsing failed, missing name value.")
+			}
+			return obj
+		}
+	}
 
-    fun toJson(): CharSequence {
-        return JsonUtils.toJson(this)
-    }
+	fun toJson(): CharSequence {
+		return JsonUtils.toJson(this)
+	}
 }

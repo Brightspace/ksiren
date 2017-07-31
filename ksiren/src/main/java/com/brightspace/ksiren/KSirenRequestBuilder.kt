@@ -18,86 +18,86 @@ import okhttp3.*
  * limitations under the License.
  */
 class KSirenRequestBuilder(val action: Action) {
-    private val fieldValues: MutableMap<String, String> = mutableMapOf()
+	private val fieldValues: MutableMap<String, String> = mutableMapOf()
 
-    init {
-        action.fields.forEach {
-            field ->
+	init {
+		action.fields.forEach {
+			field ->
 
-            field.value?.let {
-                fieldValues[field.name] = it
-            }
-        }
-    }
+			field.value?.let {
+				fieldValues[field.name] = it
+			}
+		}
+	}
 
-    fun addFieldValue(name: String, value: String): KSirenRequestBuilder {
-        fieldValues.put(name, value)
-        return this
-    }
+	fun addFieldValue(name: String, value: String): KSirenRequestBuilder {
+		fieldValues.put(name, value)
+		return this
+	}
 
-    fun build(): Request {
-        val requestBuilder: Request.Builder = Request.Builder()
-        val urlBuilder: HttpUrl.Builder? = HttpUrl.parse(action.href)?.newBuilder()
+	fun build(): Request {
+		val requestBuilder: Request.Builder = Request.Builder()
+		val urlBuilder: HttpUrl.Builder? = HttpUrl.parse(action.href)?.newBuilder()
 
-        if (action.fields.isNotEmpty()) {
-            when (action.method) {
-                "GET" -> {
-                    fieldValues.forEach {
-                        (name, value) ->
+		if (action.fields.isNotEmpty()) {
+			when (action.method) {
+				"GET" -> {
+					fieldValues.forEach {
+						(name, value) ->
 
-                        urlBuilder?.addQueryParameter(name, value)
-                    }
-                    requestBuilder.get()
-                }
-                "POST" -> {
-                    requestBuilder.post(getBody())
-                }
-            }
-        }
+						urlBuilder?.addQueryParameter(name, value)
+					}
+					requestBuilder.get()
+				}
+				"POST" -> {
+					requestBuilder.post(getBody())
+				}
+			}
+		}
 
-        requestBuilder.url(urlBuilder?.build())
+		requestBuilder.url(urlBuilder?.build())
 
-        return requestBuilder.build()
-    }
+		return requestBuilder.build()
+	}
 
-    private fun getBody(): RequestBody {
-        when(action.type) {
-            ContentType.JSON -> {
-                val mediaType = MediaType.parse(action.type.value)
+	private fun getBody(): RequestBody {
+		when (action.type) {
+			ContentType.JSON -> {
+				val mediaType = MediaType.parse(action.type.value)
 
-                val json = StringBuilder()
-                json.append("{")
+				val json = StringBuilder()
+				json.append("{")
 
-                var count = 0
-                fieldValues.forEach { (name, value) ->
-                    if (count > 0) {
-                        json.append(", ")
-                    }
+				var count = 0
+				fieldValues.forEach { (name, value) ->
+					if (count > 0) {
+						json.append(", ")
+					}
 
-                    json.append("\"")
-                    json.append(name)
-                    json.append("\": \"")
-                    json.append(value)
-                    json.append("\"")
+					json.append("\"")
+					json.append(name)
+					json.append("\": \"")
+					json.append(value)
+					json.append("\"")
 
-                    count += 1
-                }
+					count += 1
+				}
 
-                json.append("}")
-                return RequestBody.create(mediaType, json.toString())
-            }
+				json.append("}")
+				return RequestBody.create(mediaType, json.toString())
+			}
 
-            ContentType.FORM -> {
-                val requestBodyBuilder: MultipartBody.Builder = MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
+			ContentType.FORM -> {
+				val requestBodyBuilder: MultipartBody.Builder = MultipartBody.Builder()
+					.setType(MultipartBody.FORM)
 
-                fieldValues.forEach {
-                    (name, value) ->
-                    requestBodyBuilder.addFormDataPart(name, value)
-                }
+				fieldValues.forEach {
+					(name, value) ->
+					requestBodyBuilder.addFormDataPart(name, value)
+				}
 
-                return requestBodyBuilder.build()
-            }
-        }
-    }
+				return requestBodyBuilder.build()
+			}
+		}
+	}
 }

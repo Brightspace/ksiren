@@ -16,5 +16,5 @@ package com.brightspace.ksiren
  * limitations under the License.
  */
 interface DefinedEntity {
-    fun getKSirenSignature(): KSirenEntitySignature
+	fun getKSirenSignature(): KSirenEntitySignature
 }

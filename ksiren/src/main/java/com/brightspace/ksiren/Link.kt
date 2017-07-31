@@ -1,7 +1,5 @@
 package com.brightspace.ksiren
 
-import com.squareup.moshi.JsonReader
-
 /**
  * Copyright 2017 D2L Corporation
  *
@@ -18,72 +16,72 @@ import com.squareup.moshi.JsonReader
  * limitations under the License.
  */
 class Link(
-        val rels: List<String>,
-        val classes: List<String> = listOf(),
-        val href: String,
-        val title: String?,
-        val type: String?) : JsonSerializable {
+	val rels: List<String>,
+	val classes: List<String> = listOf(),
+	val href: String,
+	val title: String?,
+	val type: String?) : JsonSerializable {
 
-    companion object {
+	companion object {
 
-        fun fromJson(reader: KSirenJsonReader): Link {
-            val rels: MutableList<String> = mutableListOf()
-            val classes: MutableList<String> = mutableListOf()
-            var href: String = ""
-            var title: String? = null
-            var type: String? = null
+		fun fromJson(reader: KSirenJsonReader): Link {
+			val rels: MutableList<String> = mutableListOf()
+			val classes: MutableList<String> = mutableListOf()
+			var href: String = ""
+			var title: String? = null
+			var type: String? = null
 
-            reader.beginObject()
-            while (reader.hasNext()) {
-                when (reader.nextName()) {
-                    "rel" -> {
-                        reader.beginArray()
-                        while (reader.hasNext()) {
-                            rels.add(reader.nextString())
-                        }
-                        reader.endArray()
-                    }
-                    "class" -> {
-                        reader.beginArray()
-                        while (reader.hasNext()) {
-                            classes.add(reader.nextString())
-                        }
-                        reader.endArray()
-                    }
-                    "href" -> {
-                        href = reader.nextString()
-                    }
-                    "title" -> {
-                        title = reader.nextString()
-                    }
-                    "type" -> {
-                        type = reader.nextString()
-                    }
+			reader.beginObject()
+			while (reader.hasNext()) {
+				when (reader.nextName()) {
+					"rel" -> {
+						reader.beginArray()
+						while (reader.hasNext()) {
+							rels.add(reader.nextString())
+						}
+						reader.endArray()
+					}
+					"class" -> {
+						reader.beginArray()
+						while (reader.hasNext()) {
+							classes.add(reader.nextString())
+						}
+						reader.endArray()
+					}
+					"href" -> {
+						href = reader.nextString()
+					}
+					"title" -> {
+						title = reader.nextString()
+					}
+					"type" -> {
+						type = reader.nextString()
+					}
 
-                }
-            }
-            reader.endObject()
-            val finishedLink: Link = Link(rels, classes, href, title, type)
-            return validate(finishedLink)
-        }
+				}
+			}
+			reader.endObject()
+			val finishedLink: Link = Link(rels, classes, href, title, type)
+			return validate(finishedLink)
+		}
 
-        fun validate(obj: Link): Link {
-            if (obj.rels.isEmpty()) {
-                throw KSirenException.ValidationException("Links must contain at least one rel.")
-            }
-            if (obj.href == "") {
-                throw KSirenException.ValidationException("Link must have an href.")
-            }
+		fun validate(obj: Link): Link {
+			if (obj.rels.isEmpty()) {
+				throw KSirenException.ValidationException("Links must contain at least one rel.")
+			}
+			if (obj.href == "") {
+				throw KSirenException.ValidationException("Link must have an href.")
+			}
 
-            return obj
-        }
-    }
+			return obj
+		}
+	}
 
-    fun hasRel(vararg rel: String): Boolean {
-        return rels.containsAll(rel.toList())
-    }
+	fun hasRel(vararg rel: String): Boolean {
+		return rels.containsAll(rel.toList())
+	}
 
-    override fun toJson(): CharSequence {
-        return JsonUtils.toJson(this)
-    }
+	override fun toJson(): CharSequence {
+		return JsonUtils.toJson(this)
+	}
 }

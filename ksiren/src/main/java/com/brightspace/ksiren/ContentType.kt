@@ -16,16 +16,16 @@ package com.brightspace.ksiren
  * limitations under the License.
  */
 enum class ContentType(val value: String) {
-    JSON("application/json"),
-    FORM("application/x-www-form-urlencoded");
+	JSON("application/json"),
+	FORM("application/x-www-form-urlencoded");
 
-    companion object {
-        fun parse(value: String): ContentType {
-            if (value.startsWith(JSON.value)) {
-                return JSON
-            } else {
-                return FORM
-            }
-        }
-    }
+	companion object {
+		fun parse(value: String): ContentType {
+			if (value.startsWith(JSON.value)) {
+				return JSON
+			} else {
+				return FORM
+			}
+		}
+	}
 }

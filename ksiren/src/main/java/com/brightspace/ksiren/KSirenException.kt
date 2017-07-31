@@ -16,7 +16,7 @@ package com.brightspace.ksiren
  * limitations under the License.
  */
 sealed class KSirenException(override val message: String) : Exception() {
-    class RequestBuilderException(override val message: String) : KSirenException(message)
+	class RequestBuilderException(override val message: String) : KSirenException(message)
 
-    class ValidationException(override val message: String) : KSirenException(message)
+	class ValidationException(override val message: String) : KSirenException(message)
 }

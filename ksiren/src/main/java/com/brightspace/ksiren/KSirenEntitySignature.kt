@@ -16,38 +16,38 @@ package com.brightspace.ksiren
  * limitations under the License.
  */
 class KSirenEntitySignature(
-        val requiredClasses: List<String>,
-        val requiredActions: List<String>,
-        val requiredLinkRels: List<String>,
-        val requiredProperties: List<String>) {
+	val requiredClasses: List<String>,
+	val requiredActions: List<String>,
+	val requiredLinkRels: List<String>,
+	val requiredProperties: List<String>) {
 
-    fun validate(entity: Entity) {
-        requiredClasses.forEach {
-            if (!entity.classes.contains(it)) {
-                throw KSirenException.ValidationException("Object is missing required class: ".plus(it))
-            }
-        }
-        requiredActions.forEach {
-            if (!entity.actions.keys.contains(it)) {
-                throw KSirenException.ValidationException("Object is missing required action: ".plus(it))
-            }
-        }
-        requiredLinkRels.forEach outer@ {
-            val rel: String = it
-            entity.links.forEach {
-                if (it.hasRel(rel)) {
-                    return@outer
-                }
-            }
+	fun validate(entity: Entity) {
+		requiredClasses.forEach {
+			if (!entity.classes.contains(it)) {
+				throw KSirenException.ValidationException("Object is missing required class: ".plus(it))
+			}
+		}
+		requiredActions.forEach {
+			if (!entity.actions.keys.contains(it)) {
+				throw KSirenException.ValidationException("Object is missing required action: ".plus(it))
+			}
+		}
+		requiredLinkRels.forEach outer@ {
+			val rel: String = it
+			entity.links.forEach {
+				if (it.hasRel(rel)) {
+					return@outer
+				}
+			}
 
-            //if we get here that means some required rel was not found
-            throw KSirenException.ValidationException("Object is missing required link rel with rel: ".plus(rel))
-        }
+			//if we get here that means some required rel was not found
+			throw KSirenException.ValidationException("Object is missing required link rel with rel: ".plus(rel))
+		}
 
-        requiredProperties.forEach {
-            if (!entity.properties.keys.contains(it)) {
-                throw KSirenException.ValidationException("Object is missing required property: ".plus(it))
-            }
-        }
-    }
+		requiredProperties.forEach {
+			if (!entity.properties.keys.contains(it)) {
+				throw KSirenException.ValidationException("Object is missing required property: ".plus(it))
+			}
+		}
+	}
 }
