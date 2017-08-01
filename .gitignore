@@ -30,3 +30,14 @@ bower_components
 node_modules
 coverage
 build
+.gradle/4.1-milestone-1/fileChanges/last-build.bin
+.gradle/4.1-milestone-1/fileContent/fileContent.lock
+.gradle/4.1-milestone-1/fileHashes/fileHashes.bin
+.gradle/4.1-milestone-1/fileHashes/fileHashes.lock
+.gradle/4.1-milestone-1/fileHashes/resourceHashesCache.bin
+.gradle/4.1-milestone-1/taskHistory/fileSnapshots.bin
+.gradle/4.1-milestone-1/taskHistory/taskHistory.bin
+.gradle/4.1-milestone-1/taskHistory/taskHistory.lock
+.gradle/buildOutputCleanup/built.bin
+.gradle/buildOutputCleanup/cache.properties
+.gradle/buildOutputCleanup/cache.properties.lock

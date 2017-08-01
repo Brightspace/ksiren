@@ -1,7 +1,5 @@
 package com.brightspace.ksiren
 
-import okhttp3.*
-
 /**
  * Copyright 2017 D2L Corporation
  *
@@ -17,8 +15,8 @@ import okhttp3.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenRequestBuilder(val action: Action) {
-	private val fieldValues: MutableMap<String, String> = mutableMapOf()
+abstract class KSirenRequestBuilder<T>(val action: Action) {
+	protected val fieldValues: MutableMap<String, String> = mutableMapOf()
 
 	init {
 		action.fields.forEach {
@@ -30,74 +28,10 @@ class KSirenRequestBuilder(val action: Action) {
 		}
 	}
 
-	fun addFieldValue(name: String, value: String): KSirenRequestBuilder {
+	fun addFieldValue(name: String, value: String): KSirenRequestBuilder<T> {
 		fieldValues.put(name, value)
 		return this
 	}
 
-	fun build(): Request {
-		val requestBuilder: Request.Builder = Request.Builder()
-		val urlBuilder: HttpUrl.Builder? = HttpUrl.parse(action.href)?.newBuilder()
-
-		if (action.fields.isNotEmpty()) {
-			when (action.method) {
-				"GET" -> {
-					fieldValues.forEach {
-						(name, value) ->
-
-						urlBuilder?.addQueryParameter(name, value)
-					}
-					requestBuilder.get()
-				}
-				"POST" -> {
-					requestBuilder.post(getBody())
-				}
-			}
-		}
-
-		requestBuilder.url(urlBuilder?.build())
-
-		return requestBuilder.build()
-	}
-
-	private fun getBody(): RequestBody {
-		when (action.type) {
-			ContentType.JSON -> {
-				val mediaType = MediaType.parse(action.type.value)
-
-				val json = StringBuilder()
-				json.append("{")
-
-				var count = 0
-				fieldValues.forEach { (name, value) ->
-					if (count > 0) {
-						json.append(", ")
-					}
-
-					json.append("\"")
-					json.append(name)
-					json.append("\": \"")
-					json.append(value)
-					json.append("\"")
-
-					count += 1
-				}
-
-				json.append("}")
-				return RequestBody.create(mediaType, json.toString())
-			}
-
-			ContentType.FORM -> {
-				val requestBodyBuilder: MultipartBody.Builder = MultipartBody.Builder()
-					.setType(MultipartBody.FORM)
-
-				fieldValues.forEach {
-					(name, value) ->
-					requestBodyBuilder.addFormDataPart(name, value)
-				}
-
-				return requestBodyBuilder.build()
-			}
-		}
-	}
+	abstract fun build(): T
 }
