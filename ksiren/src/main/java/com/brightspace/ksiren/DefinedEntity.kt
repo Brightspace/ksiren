@@ -15,6 +15,9 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-interface DefinedEntity {
-	fun getKSirenSignature(): KSirenEntitySignature
+abstract class DefinedEntity(entity: Entity, signature: KSirenEntitySignature) {
+	init {
+		//Will throw a ValidationException if the Entity passed does not conform to the signature.
+		signature.validate(entity)
+	}
 }
