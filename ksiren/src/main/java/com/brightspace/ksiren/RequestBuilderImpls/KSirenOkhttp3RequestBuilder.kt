@@ -20,7 +20,7 @@ import okhttp3.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<Request>(wrappedAction) {
+class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<Request>(wrappedAction) {
 
 	override fun build(): Request {
 		val requestBuilder: Request.Builder = Request.Builder()
