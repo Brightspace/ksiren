@@ -1,7 +1,7 @@
-package com.brightspace.ksiren.ReaderImpls
+package com.brightspace.ksiren.gson_adapter
 
 import com.brightspace.ksiren.KSirenJsonReader
-import com.squareup.moshi.JsonReader
+import com.google.gson.stream.JsonReader
 
 /**
  * Copyright 2017 D2L Corporation
@@ -18,32 +18,32 @@ import com.squareup.moshi.JsonReader
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenMoshiAdapter(val moshiReader: JsonReader) : KSirenJsonReader {
+class KSirenGsonAdapter(val gsonReader: JsonReader) : KSirenJsonReader {
 	override fun beginObject() {
-		moshiReader.beginObject()
+		gsonReader.beginObject()
 	}
 
 	override fun endObject() {
-		moshiReader.endObject()
+		gsonReader.endObject()
 	}
 
 	override fun beginArray() {
-		moshiReader.beginArray()
+		gsonReader.beginArray()
 	}
 
 	override fun endArray() {
-		moshiReader.endArray()
+		gsonReader.endArray()
 	}
 
 	override fun hasNext(): Boolean {
-		return moshiReader.hasNext()
+		return gsonReader.hasNext()
 	}
 
 	override fun nextName(): String {
-		return moshiReader.nextName()
+		return gsonReader.nextName()
 	}
 
 	override fun nextString(): String {
-		return moshiReader.nextString()
+		return gsonReader.nextString()
 	}
 }

@@ -1,4 +1,4 @@
-package com.brightspace.ksiren.RequestBuilderImpls
+package com.brightspace.ksiren.okhttp3_request_builder
 
 import com.brightspace.ksiren.Action
 import com.brightspace.ksiren.ContentType
