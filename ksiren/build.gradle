@@ -1,5 +1,8 @@
 apply plugin: 'kotlin'
 apply plugin: 'maven'
+apply plugin: 'jacoco'
+apply plugin: "com.github.kt3k.coveralls"
+
 
 version = "0.1.5"
 
@@ -12,6 +15,13 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile 'org.mockito:mockito-core:2.7.22'
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled = true // coveralls plugin depends on xml format report
+		html.enabled = true
+	}
 }
 
 sourceCompatibility = "1.7"
