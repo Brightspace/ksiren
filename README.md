@@ -1,8 +1,5 @@
 # KSiren
-[BADGES:]
-[Bower version]
-[NPM version]
-[Build status]
+![Build status](https://travis-ci.com/Brightspace/ksiren.svg?token=bx5yfkuXAPjvTyLvsLn4&branch=master)
 [Dependency Status]
 [Coveralls]
 
