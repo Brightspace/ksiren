@@ -4,4 +4,4 @@ jdk:
   - oraclejdk8
 
 after_success:
-- ./gradlew :ksiren:jacocoTestReport :ksiren:coveralls
+- COVERALLS_REPO_TOKEN= ./gradlew jacocoTestReport coveralls
