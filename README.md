@@ -33,7 +33,7 @@ The above artifacts are available in the following repository
 
 ## Documentation
 
-See [link to docs].
+See [the wiki](https://github.com/Brightspace/ksiren/wiki).
 
 ## Versioning
 
