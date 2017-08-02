@@ -1,5 +1,4 @@
 package com.brightspace.ksiren
-
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -24,7 +23,7 @@ class ActionTest {
     fun expectAction() {
         val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing","fields": [{"name": "test","type": "number","value": "1"}]}"""
 
-        val action: Action = Action.fromJson(json)
+        val action: Action = Action.fromJson(json.toKSirenJsonReader())
         assertEquals("TestAction", action.name)
         assertEquals("GET", action.method)
         assertEquals("http://api.x.io/orders/42/items", action.href)
@@ -37,7 +36,7 @@ class ActionTest {
     fun expectActionWithNoFields() {
         val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing"}"""
 
-        val action: Action = Action.fromJson(json)
+        val action: Action = Action.fromJson(json.toKSirenJsonReader())
         assertEquals("TestAction", action.name)
         assertEquals("GET", action.method)
         assertEquals("http://api.x.io/orders/42/items", action.href)
@@ -48,7 +47,7 @@ class ActionTest {
     @Test
     fun expectActionWithField() {
         val json: String = """{ "name": "add-item", "title": "Add Item", "method": "GET", "href": "http://api.x.io/orders/42/items", "fields": [{ "name": "orderNumber", "type": "hidden", "value": "42" }, { "name": "productCode", "type": "text" }, { "name": "quantity", "type": "number" }] }"""
-        val action: Action = Action.fromJson(json)
+        val action: Action = Action.fromJson(json.toKSirenJsonReader())
         assertTrue(action.hasField("orderNumber"))
         assertTrue(action.hasField("productCode"))
         assertTrue(action.hasField("quantity"))
@@ -57,7 +56,7 @@ class ActionTest {
     @Test
     fun serializeToJson() {
         val json: String = """{ "name": "add-item", "title": "Add Item", "method": "POST", "href": "http://api.x.io/orders/42/items", "type": "application/x-www-form-urlencoded", "fields": [{ "name": "orderNumber", "type": "hidden", "value": "42" }, { "name": "productCode", "type": "text" }, { "name": "quantity", "type": "number" }] }"""
-        val action = Action.fromJson(json)
+        val action = Action.fromJson(json.toKSirenJsonReader())
 
         // order of properties matters...
         assertEquals(json, action.toJson())

@@ -22,7 +22,7 @@ class LinkTest {
     @Test
     fun expectLink() {
         val json: String = """{ "rel": [ "self" ], "class": [ "link" ], "title": "my link", "type": "text/plain", "href": "http://api.x.io/orders/42" }"""
-        val link: Link = Link.fromJson(json)
+        val link: Link = Link.fromJson(json.toKSirenJsonReader())
 
         assertEquals(listOf("self"), link.rels)
         assertEquals("http://api.x.io/orders/42", link.href)
@@ -31,7 +31,7 @@ class LinkTest {
     @Test
     fun serializeToJson() {
         val json = """{ "rel": [ "self" ], "class": [ "link" ], "title": "my link", "type": "text/plain", "href": "http://api.x.io/orders/42" }"""
-        val link = Link.fromJson(json)
+        val link = Link.fromJson(json.toKSirenJsonReader())
 
         // order of properties matters...
         assertEquals(json, link.toJson())

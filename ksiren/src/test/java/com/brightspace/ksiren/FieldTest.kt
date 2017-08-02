@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 class FieldTest {
     @Test
     fun expectField() {
-        val field: Field = Field.fromJson("""{ "name": "orderNumber", "type": "hidden", "value": "42" }""")
+        val field: Field = Field.fromJson("""{ "name": "orderNumber", "type": "hidden", "value": "42" }""".toKSirenJsonReader())
         assertEquals("orderNumber", field.name)
         assertEquals("hidden", field.type)
         assertEquals("42", field.value)
@@ -31,7 +31,7 @@ class FieldTest {
     @Test
     fun expectJsonException() {
         try {
-            Field.fromJson("""{ "name": "orderNumber" "type": "hidden", "value": "42" }""")
+            Field.fromJson("""{ "name": "orderNumber" "type": "hidden", "value": "42" }""".toKSirenJsonReader())
         } catch (ex: JsonEncodingException) {
             assert(true)
         }
@@ -40,7 +40,7 @@ class FieldTest {
     @Test
     fun serializeToJson() {
         val json = """{ "name": "orderNumber", "type": "hidden", "value": "42" }"""
-        val field = Field.fromJson(json)
+        val field = Field.fromJson(json.toKSirenJsonReader())
 
         // order of properties matters...
         assertEquals(json, field.toJson())

@@ -1,5 +1,7 @@
 package com.brightspace.ksiren
 
+import com.brightspace.ksiren.okhttp3_request_builder.KSirenOkhttp3RequestBuilder
+import okhttp3.Request
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -29,7 +31,7 @@ class KSirenRequestBuilderTest {
     @Test
     fun testGetBuilder() {
         val action: Action = returnAction("GET")
-        val requestBuilder: KSirenRequestBuilder = KSirenRequestBuilder(action)
+        val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(action)
         requestBuilder.addFieldValue("testParam", "testValue")
         assertEquals("http://www.example.com/?testParam=testValue", requestBuilder.build().url().toString())
     }
@@ -37,7 +39,7 @@ class KSirenRequestBuilderTest {
     @Test
     fun testPostBuilder() {
         val action: Action = returnAction("POST")
-        val requestBuilder: KSirenRequestBuilder = KSirenRequestBuilder(action)
+        val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(action)
         requestBuilder.addFieldValue("testParam", "testValue")
         requestBuilder.build()
 
