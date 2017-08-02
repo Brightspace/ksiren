@@ -25,10 +25,6 @@ jacocoTestReport {
 }
 
 coveralls {
-<<<<<<< HEAD
-	System.setProperty("COVERALLS_REPO_TOKEN", "")
-=======
->>>>>>> 56f3fc1... Add the repo key for coveralls as a system variable.
 	jacocoReportPath = "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
 }
 sourceCompatibility = "1.7"
