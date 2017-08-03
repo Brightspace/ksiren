@@ -1,7 +1,5 @@
-apply plugin: 'kotlin'
-apply plugin: 'maven'
-
-version = "0.2"
+group = "com.brightspace.ksiren"
+version = "1.0.0"
 
 dependencies {
 	compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.3-2'
