@@ -22,7 +22,7 @@ allprojects {
 }
 ```
 ```
-compile 'com.brightspace.ksiren:ksiren:1.0.0''
+compile 'com.brightspace.ksiren:ksiren:1.0.0'
 ```
 You must import, or create yourself, a JSON parsing plugin; adapters for moshi and gson are available and can be pulled in using one of the following Gradle compile commands:
 ```
