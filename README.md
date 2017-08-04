@@ -11,22 +11,29 @@ Options for getting started:
 
 * [Download the latest release](../../releases).
 * Clone the repo: `git clone https://github.com/Brightspace/ksiren.git`.
-* Include the library in your project with Gradle:
+* Include the library in your project with Gradle: include the appropriate Bintray Maven repository in your `allprojects` closure, and add the main library to your project dependencies:
+```
+allprojects {
+    repositories {
+        maven {
+            url  "http://dl.bintray.com/brightspace/ksiren"
+        }
+    }
+}
+```
 ```
 compile 'com.brightspace.ksiren:ksiren:1.0.0''
 ```
 You must import, or create yourself, a JSON parsing plugin; adapters for moshi and gson are available and can be pulled in using one of the following Gradle compile commands:
 ```
 compile 'com.brightspace.ksiren:ksiren-moshi-adapter:1.0.0'
-compile 'com.brightspace:ksiren.gson-adapter:0.2' //outdated
+compile 'com.brightspace.ksiren:ksiren-gson-adapter:1.0.0'
 ```
 
 Optionally, you can include, or create, a request building plugin; an adapter for okhttp3 is available:
 ```
 compile 'com.brightspace.ksiren:ksiren-okhttp3-request-builder:1.0.0'
 ```
-
-The above artifacts are available in the following repository
 
 ## Documentation
 
