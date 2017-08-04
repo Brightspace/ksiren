@@ -25,6 +25,9 @@
 nbproject
 Thumbs.db
 
+# Misc. files
+local.properties
+
 # Folders
 coverage
 build
