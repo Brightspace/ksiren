@@ -9,6 +9,7 @@ buildscript {
 	dependencies {
 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.1"
+		classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.15"
 	}
 }
 
@@ -22,4 +23,21 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'kotlin'
 	apply plugin: 'maven'
+	apply plugin: 'org.jetbrains.dokka'
+
+	task sourcesJar(type: Jar) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+
+	task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+		outputFormat = 'javadoc'
+		outputDirectory = "$buildDir/javadoc"
+		inputs.dir 'src/main/kotlin'
+	}
+
+	task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+		classifier = 'javadoc'
+		from "$buildDir/javadoc"
+	}
 }
