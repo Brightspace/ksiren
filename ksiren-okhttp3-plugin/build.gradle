@@ -7,7 +7,6 @@ def versionValue = "1.0.1"
 dependencies {
 	compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.51'
 	compile 'com.squareup.okhttp3:okhttp:3.8.1'
-	compile 'io.reactivex.rxjava2:rxjava:2.0.4'
 
 	compileOnly project(":ksiren")
 }
