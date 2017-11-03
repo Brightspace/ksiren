@@ -15,9 +15,38 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class DefinedEntity(entity: Entity, signature: KSirenEntitySignature) {
+abstract class DefinedEntity(val entity: Entity, signature: KSirenEntitySignature) {
+
+	private val subEntities: MutableList<Entity> = entity.entities.toMutableList()
+
 	init {
 		//Will throw a ValidationException if the Entity passed does not conform to the signature.
 		signature.validate(entity)
+	}
+
+	/**
+	 * Fetches all Entities of type T from the list of sub entities. If the entity isn't embedded we
+	 * use the passed KSirenEntityFetchClient to fetch the complete entity before parsing.
+	 *
+	 * WARNING: This function uses the network, and will block on the thread it is called from.
+	 */
+	fun <T:DefinedEntity>getSubEntitiesOfType(client: KSirenEntityFetchClient, factory: (Entity) -> T): List<T> {
+		val resultArr: MutableList<T> = mutableListOf()
+
+		for (i in subEntities.indices) {
+			val href: String? = entity.entities[i].href
+
+			if (href != null) {
+				subEntities[i] = Entity.fromJson(client.executeCall(href))
+			}
+
+			try {
+				val entity:T = factory(subEntities[i])
+				resultArr.add(entity)
+			} catch (e: KSirenException.ValidationException) {
+				//Do, nothing, this sub entity just doesn't match the requested type
+			}
+		}
+		return resultArr
 	}
 }

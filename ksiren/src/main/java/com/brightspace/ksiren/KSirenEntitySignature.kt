@@ -22,11 +22,17 @@ class KSirenEntitySignature(
 	val requiredProperties: List<String>) {
 
 	fun validate(entity: Entity) {
+
+		if (entity.href != null) {
+			throw KSirenException.ValidationException("Can't validate unrealized class!")
+		}
+
 		requiredClasses.forEach {
 			if (!entity.classes.contains(it)) {
 				throw KSirenException.ValidationException("Object is missing required class: ".plus(it))
 			}
 		}
+
 		requiredActions.forEach {
 			if (!entity.actions.keys.contains(it)) {
 				throw KSirenException.ValidationException("Object is missing required action: ".plus(it))

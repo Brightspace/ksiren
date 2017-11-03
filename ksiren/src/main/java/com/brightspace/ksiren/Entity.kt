@@ -22,6 +22,7 @@ class Entity(
 	val rel: List<String> = listOf(),
 	val actions: Map<String, Action> = mapOf(),
 	val links: List<Link> = listOf(),
+	val href: String?,
 	val title: String?) : JsonSerializable {
 
 	companion object {
@@ -33,6 +34,7 @@ class Entity(
 			val rel: MutableList<String> = mutableListOf()
 			val actions: MutableMap<String, Action> = mutableMapOf()
 			val links: MutableList<Link> = mutableListOf()
+			var href: String? = null
 			var title: String? = null
 
 			reader.beginObject()
@@ -88,10 +90,13 @@ class Entity(
 						}
 						reader.endArray()
 					}
+					"href" -> {
+						href = reader.nextString()
+					}
 				}
 			}
 			reader.endObject()
-			return Entity(classes, properties, entities, rel, actions, links, title)
+			return Entity(classes, properties, entities, rel, actions, links, href, title)
 		}
 	}
 

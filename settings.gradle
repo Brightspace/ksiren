@@ -1,1 +1,1 @@
-include ':ksiren', ':ksiren-moshi-adapter', ':ksiren-gson-adapter', ':ksiren-okhttp3-request-builder'
+include ':ksiren', ':ksiren-moshi-adapter', ':ksiren-gson-adapter', ':ksiren-okhttp3-plugin'
