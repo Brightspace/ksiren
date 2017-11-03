@@ -17,7 +17,7 @@ package com.brightspace.ksiren
  */
 abstract class DefinedEntity(val entity: Entity, signature: KSirenEntitySignature) {
 
-	val subEntities: MutableList<Entity> = entity.entities.toMutableList()
+	private val subEntities: MutableList<Entity> = entity.entities.toMutableList()
 
 	init {
 		//Will throw a ValidationException if the Entity passed does not conform to the signature.
