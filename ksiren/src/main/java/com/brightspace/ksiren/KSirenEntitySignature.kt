@@ -23,39 +23,36 @@ class KSirenEntitySignature(
 
 	fun validate(entity: Entity) {
 
-		try {
-			requiredClasses.forEach {
-				if (!entity.classes.contains(it)) {
-					throw KSirenException.ValidationException("Object is missing required class: ".plus(it))
-				}
-			}
-			requiredActions.forEach {
-				if (!entity.actions.keys.contains(it)) {
-					throw KSirenException.ValidationException("Object is missing required action: ".plus(it))
-				}
-			}
-			requiredLinkRels.forEach outer@ {
-				val rel: String = it
-				entity.links.forEach {
-					if (it.hasRel(rel)) {
-						return@outer
-					}
-				}
+		if (entity.href != null) {
+			throw KSirenException.ValidationException("Can't validate unrealized class!")
+		}
 
-				//if we get here that means some required rel was not found
-				throw KSirenException.ValidationException("Object is missing required link rel with rel: ".plus(rel))
+		requiredClasses.forEach {
+			if (!entity.classes.contains(it)) {
+				throw KSirenException.ValidationException("Object is missing required class: ".plus(it))
 			}
+		}
 
-			requiredProperties.forEach {
-				if (!entity.properties.keys.contains(it)) {
-					throw KSirenException.ValidationException("Object is missing required property: ".plus(it))
+		requiredActions.forEach {
+			if (!entity.actions.keys.contains(it)) {
+				throw KSirenException.ValidationException("Object is missing required action: ".plus(it))
+			}
+		}
+		requiredLinkRels.forEach outer@ {
+			val rel: String = it
+			entity.links.forEach {
+				if (it.hasRel(rel)) {
+					return@outer
 				}
 			}
-		} catch (e: KSirenException.ValidationException) {
-			if (entity.href == null) {
-				throw e
-			} else {
-				entity.isEmbedded = true
+
+			//if we get here that means some required rel was not found
+			throw KSirenException.ValidationException("Object is missing required link rel with rel: ".plus(rel))
+		}
+
+		requiredProperties.forEach {
+			if (!entity.properties.keys.contains(it)) {
+				throw KSirenException.ValidationException("Object is missing required property: ".plus(it))
 			}
 		}
 	}

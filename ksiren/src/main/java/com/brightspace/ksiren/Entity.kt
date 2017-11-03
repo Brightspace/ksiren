@@ -18,33 +18,12 @@ package com.brightspace.ksiren
 class Entity(
 	val classes: List<String> = listOf(),
 	val properties: Map<String, String> = mapOf(),
-	val entities: MutableList<Entity> = mutableListOf(),
+	val entities: List<Entity> = listOf(),
 	val rel: List<String> = listOf(),
 	val actions: Map<String, Action> = mapOf(),
 	val links: List<Link> = listOf(),
 	val href: String?,
 	val title: String?) : JsonSerializable {
-
-	var isEmbedded: Boolean = false
-
-	inline fun <T:DefinedEntity>getSubEntitiesOfType(client: KSirenEntityFetchClient, factory: (Entity) -> T): List<T> {
-		val resultArr: MutableList<T> = mutableListOf()
-
-		for (i in entities.indices) {
-			val href: String? = entities[i].href
-
-			if (entities[i].isEmbedded && href != null) {
-				entities[i] = Entity.fromJson(client.executeCall(href))
-			}
-
-			try {
-				resultArr.add(factory(entities[i]))
-			} catch (e: KSirenException.ValidationException) {
-				//Do, nothing, this sub entity just doesn't match the requested type
-			}
-		}
-		return resultArr
-	}
 
 	companion object {
 
