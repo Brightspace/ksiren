@@ -36,6 +36,14 @@ class FieldTest {
 		assertEquals("false", field.value)
 	}
 
+	@Test
+	fun nullParseTest() {
+		val field: Field = Field.fromJson("""{ "name": "expressShipping", "type": "checkbox", "value": null }""".toKSirenJsonReader())
+		assertEquals("expressShipping", field.name)
+		assertEquals("checkbox", field.type)
+		assertEquals("", field.value)
+	}
+
     @Test
     fun expectJsonException() {
         try {

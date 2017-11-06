@@ -15,17 +15,39 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-interface KSirenJsonReader {
+abstract class KSirenJsonReader {
 
-	fun beginObject()
-	fun endObject()
+	abstract fun beginObject()
+	abstract fun endObject()
 
-	fun beginArray()
-	fun endArray()
+	abstract fun beginArray()
+	abstract fun endArray()
 
-	fun hasNext(): Boolean
-	fun nextName(): String
-	fun nextString(): String
-	fun nextBoolean(): String
+	abstract fun hasNext(): Boolean
+	abstract fun nextName(): String
+
+	fun nextString(): String {
+		try {
+			return nextStringImpl()
+		} catch (e: Exception) {
+			//Do nothing, try reading booleans and nulls first
+		}
+
+		try {
+			return nextBoolean()
+		} catch (e: Exception) {
+			//Do nothing, try reading nulls first
+		}
+
+		try {
+			return nextNull()
+		} catch(e: Exception) {
+			throw KSirenException.ParseException(e.message?:"Could not parse value as String, Boolean or null value.")
+		}
+	}
+
+	abstract fun nextStringImpl(): String
+	abstract protected fun nextBoolean(): String
+	abstract protected fun nextNull(): String
 
 }

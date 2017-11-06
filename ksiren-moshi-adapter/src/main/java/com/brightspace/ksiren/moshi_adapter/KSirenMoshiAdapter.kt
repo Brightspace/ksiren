@@ -19,7 +19,7 @@ import com.squareup.moshi.JsonReader
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenMoshiAdapter(val moshiReader: JsonReader) : KSirenJsonReader {
+class KSirenMoshiAdapter(val moshiReader: JsonReader) : KSirenJsonReader() {
 	override fun beginObject() {
 		moshiReader.beginObject()
 	}
@@ -44,7 +44,7 @@ class KSirenMoshiAdapter(val moshiReader: JsonReader) : KSirenJsonReader {
 		return moshiReader.nextName()
 	}
 
-	override fun nextString(): String {
+	override fun nextStringImpl(): String {
 		try {
 			return moshiReader.nextString()
 		} catch( e: Exception) {
@@ -54,5 +54,10 @@ class KSirenMoshiAdapter(val moshiReader: JsonReader) : KSirenJsonReader {
 
 	override fun nextBoolean(): String {
 		return moshiReader.nextBoolean().toString()
+	}
+
+	override fun nextNull(): String {
+		moshiReader.nextNull<String>()
+		return ""
 	}
 }

@@ -19,7 +19,7 @@ import com.google.gson.stream.JsonReader
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenGsonAdapter(val gsonReader: JsonReader) : KSirenJsonReader {
+class KSirenGsonAdapter(val gsonReader: JsonReader) : KSirenJsonReader() {
 	override fun beginObject() {
 		gsonReader.beginObject()
 	}
@@ -44,15 +44,16 @@ class KSirenGsonAdapter(val gsonReader: JsonReader) : KSirenJsonReader {
 		return gsonReader.nextName()
 	}
 
-	override fun nextString(): String {
-		try {
-			return gsonReader.nextString()
-		} catch( e: Exception) {
-			throw KSirenException.ParseException(e.message?:"Reading string failed")
-		}
+	override fun nextStringImpl(): String {
+		return gsonReader.nextString()
 	}
 
 	override fun nextBoolean(): String {
 		return gsonReader.nextBoolean().toString()
+	}
+
+	override fun nextNull(): String {
+		gsonReader.nextNull()
+		return ""
 	}
 }

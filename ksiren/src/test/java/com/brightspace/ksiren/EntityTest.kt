@@ -31,6 +31,17 @@ class EntityTest {
         assertEquals(listOf("order"), entity.classes)
     }
 
+	@Test
+	fun expectHandledNulls() {
+		val json = """{ "class": [ "order" ], "properties": { "orderNumber": null, "itemCount": "3", "status": null }, "links": [{ "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }] }"""
+
+		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
+		assertTrue(entity.actions.isEmpty())
+		assertTrue(entity.links.isNotEmpty())
+		assertTrue(entity.properties.size == 3)
+		assertEquals(listOf("order"), entity.classes)
+	}
+
     @Test
     fun serializeToJson() {
         // the parser cannot handle linked entities
