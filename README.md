@@ -3,6 +3,7 @@
 ![Build status](https://travis-ci.com/Brightspace/ksiren.svg?token=bx5yfkuXAPjvTyLvsLn4&branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/Brightspace/ksiren/badge.svg?branch=master&t=tP7WjH)](https://coveralls.io/github/Brightspace/ksiren?branch=master)
 
+
 A Kotlin library for parsing responses from Siren API endpoints and building Siren Action requests.
 
 ## Quick start
@@ -11,20 +12,11 @@ Options for getting started:
 
 * [Download the latest release](../../releases).
 * Clone the repo: `git clone https://github.com/Brightspace/ksiren.git`.
-* Include the library in your project with Gradle: include the appropriate Bintray Maven repository in your `allprojects` closure, and add the main library to your project dependencies:
-```
-allprojects {
-    repositories {
-        maven {
-            url  "http://dl.bintray.com/brightspace/ksiren"
-        }
-    }
-}
-```
+* Include the library in your project with gradle:
 ```
 compile 'com.brightspace.ksiren:ksiren:1.0.0'
 ```
-You must import, or create yourself, a JSON parsing plugin; adapters for moshi and gson are available and can be pulled in using one of the following Gradle compile commands:
+You must import, or create yourself, a JSON parsing plugin; adapters for moshi and gson are available and can be pulled in using one of the following gradle compile commands:
 ```
 compile 'com.brightspace.ksiren:ksiren-moshi-adapter:1.0.0'
 compile 'com.brightspace.ksiren:ksiren-gson-adapter:1.0.0'
