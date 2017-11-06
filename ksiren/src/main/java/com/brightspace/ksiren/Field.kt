@@ -46,7 +46,11 @@ class Field(
 						type = reader.nextString()
 					}
 					"value" -> {
-						value = reader.nextString()
+						try {
+							value = reader.nextString()
+						} catch(e:KSirenException.ParseException) {
+							value = reader.nextBoolean()
+						}
 					}
 				}
 			}

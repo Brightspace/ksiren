@@ -1,5 +1,6 @@
 package com.brightspace.ksiren.gson_adapter
 
+import com.brightspace.ksiren.KSirenException
 import com.brightspace.ksiren.KSirenJsonReader
 import com.google.gson.stream.JsonReader
 
@@ -44,6 +45,14 @@ class KSirenGsonAdapter(val gsonReader: JsonReader) : KSirenJsonReader {
 	}
 
 	override fun nextString(): String {
-		return gsonReader.nextString()
+		try {
+			return gsonReader.nextString()
+		} catch( e: Exception) {
+			throw KSirenException.ParseException(e.message?:"Reading string failed")
+		}
+	}
+
+	override fun nextBoolean(): String {
+		return gsonReader.nextBoolean().toString()
 	}
 }

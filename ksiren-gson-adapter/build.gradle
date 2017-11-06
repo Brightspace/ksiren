@@ -2,7 +2,7 @@ def group = "com.brightspace.ksiren"
 def artifactName = "ksiren-gson-adapter"
 def vcsUrlSetting = "https://github.com/Brightspace/ksiren/"
 def description = 'Adapter to enable KSiren to parse Siren entities from JSON using Gson.'
-def versionValue = "1.1.0-beta1"
+def versionValue = "1.1.0-beta2"
 
 dependencies {
 	compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.51'

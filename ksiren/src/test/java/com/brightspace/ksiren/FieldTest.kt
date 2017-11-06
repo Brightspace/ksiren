@@ -28,6 +28,14 @@ class FieldTest {
         assertEquals("42", field.value)
     }
 
+	@Test
+	fun booleanParseTest() {
+		val field: Field = Field.fromJson("""{ "name": "expressShipping", "type": "checkbox", "value": false }""".toKSirenJsonReader())
+		assertEquals("expressShipping", field.name)
+		assertEquals("checkbox", field.type)
+		assertEquals("false", field.value)
+	}
+
     @Test
     fun expectJsonException() {
         try {

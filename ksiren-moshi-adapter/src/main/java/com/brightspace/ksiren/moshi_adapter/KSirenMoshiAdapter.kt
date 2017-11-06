@@ -1,9 +1,8 @@
 package com.brightspace.ksiren.moshi_adapter
 
+import com.brightspace.ksiren.KSirenException
 import com.brightspace.ksiren.KSirenJsonReader
 import com.squareup.moshi.JsonReader
-import okio.Okio
-import java.io.ByteArrayInputStream
 
 /**
  * Copyright 2017 D2L Corporation
@@ -46,6 +45,14 @@ class KSirenMoshiAdapter(val moshiReader: JsonReader) : KSirenJsonReader {
 	}
 
 	override fun nextString(): String {
-		return moshiReader.nextString()
+		try {
+			return moshiReader.nextString()
+		} catch( e: Exception) {
+			throw KSirenException.ParseException(e.message?:"Reading string failed")
+		}
+	}
+
+	override fun nextBoolean(): String {
+		return moshiReader.nextBoolean().toString()
 	}
 }
