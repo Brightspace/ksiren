@@ -26,5 +26,6 @@ interface KSirenJsonReader {
 	fun hasNext(): Boolean
 	fun nextName(): String
 	fun nextString(): String
+	fun nextBoolean(): String
 
 }

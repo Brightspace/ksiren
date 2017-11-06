@@ -19,4 +19,6 @@ sealed class KSirenException(override val message: String) : Exception() {
 	class RequestBuilderException(override val message: String) : KSirenException(message)
 
 	class ValidationException(override val message: String) : KSirenException(message)
+
+	class ParseException(override val message: String) : KSirenException(message)
 }
