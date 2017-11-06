@@ -1,7 +1,7 @@
 # KSiren
 [ ![Kotlin](https://img.shields.io/badge/Kotlin-1.1.3--2-blue.svg)](http://kotlinlang.org)
 ![Build status](https://travis-ci.com/Brightspace/ksiren.svg?token=bx5yfkuXAPjvTyLvsLn4&branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/Brightspace/ksiren/badge.svg?branch=master&t=tP7WjH)](https://coveralls.io/github/Brightspace/ksiren?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/Brightspace/ksiren/badge.svg?branch=master)](https://coveralls.io/github/Brightspace/ksiren?branch=master)
 
 A Kotlin library for parsing responses from Siren API endpoints and building Siren Action requests.
 
