@@ -24,26 +24,26 @@ class Field(
 	companion object {
 
 		fun fromJson(reader: KSirenJsonReader): Field {
-			var name: String = ""
+			var name = ""
 			val classes: MutableList<String> = mutableListOf()
-			var type: String = "text"
+			var type = "text"
 			var value: String? = null
 
 			reader.beginObject()
 			while (reader.hasNext()) {
 				when (reader.nextName()) {
 					"name" -> {
-						name = reader.nextString()
+						conditionalRead(reader, {name = it})
 					}
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							classes.add(reader.nextString())
+							conditionalRead(reader, {classes.add(it)})
 						}
 						reader.endArray()
 					}
 					"type" -> {
-						type = reader.nextString()
+						conditionalRead(reader, {type = it})
 					}
 					"value" -> {
 						value = reader.nextString()
@@ -51,7 +51,7 @@ class Field(
 				}
 			}
 			reader.endObject()
-			val finishedField: Field = Field(name, classes, type, value)
+			val finishedField = Field(name, classes, type, value)
 			return validate(finishedField)
 		}
 

@@ -26,7 +26,7 @@ abstract class KSirenJsonReader {
 	abstract fun hasNext(): Boolean
 	abstract fun nextName(): String
 
-	fun nextString(): String {
+	fun nextString(): String? {
 		try {
 			return nextStringImpl()
 		} catch (e: Exception) {
@@ -40,7 +40,8 @@ abstract class KSirenJsonReader {
 		}
 
 		try {
-			return nextNull()
+			nextNull()
+			return null
 		} catch(e: Exception) {
 			throw KSirenException.ParseException(e.message?:"Could not parse value as String, Boolean or null value.")
 		}
@@ -48,6 +49,6 @@ abstract class KSirenJsonReader {
 
 	abstract fun nextStringImpl(): String
 	abstract protected fun nextBoolean(): String
-	abstract protected fun nextNull(): String
+	abstract protected fun nextNull()
 
 }

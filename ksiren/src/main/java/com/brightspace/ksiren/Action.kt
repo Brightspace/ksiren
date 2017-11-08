@@ -27,10 +27,10 @@ class Action(
 	companion object {
 
 		fun fromJson(reader: KSirenJsonReader): Action {
-			var name: String = ""
+			var name = ""
 			val classes: MutableList<String> = mutableListOf()
-			var method: String = "GET"
-			var href: String = ""
+			var method = "GET"
+			var href = ""
 			var title: String? = null
 			var type = ContentType.FORM
 			val fields: MutableList<Field> = mutableListOf()
@@ -41,24 +41,24 @@ class Action(
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							classes.add(reader.nextString())
+							conditionalRead(reader, {classes.add(it)})
 						}
 						reader.endArray()
 					}
 					"name" -> {
-						name = reader.nextString()
+						conditionalRead(reader, {name = it})
 					}
 					"method" -> {
-						method = reader.nextString()
+						conditionalRead(reader, {method = it})
 					}
 					"href" -> {
-						href = reader.nextString()
+						conditionalRead(reader, {href = it})
 					}
 					"title" -> {
 						title = reader.nextString()
 					}
 					"type" -> {
-						type = ContentType.parse(reader.nextString())
+						conditionalRead(reader, {type = ContentType.parse(it)})
 					}
 					"fields" -> {
 						reader.beginArray()

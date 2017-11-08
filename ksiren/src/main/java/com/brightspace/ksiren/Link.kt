@@ -27,7 +27,7 @@ class Link(
 		fun fromJson(reader: KSirenJsonReader): Link {
 			val rels: MutableList<String> = mutableListOf()
 			val classes: MutableList<String> = mutableListOf()
-			var href: String = ""
+			var href = ""
 			var title: String? = null
 			var type: String? = null
 
@@ -37,19 +37,19 @@ class Link(
 					"rel" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							rels.add(reader.nextString())
+							conditionalRead(reader, {rels.add(it)})
 						}
 						reader.endArray()
 					}
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							classes.add(reader.nextString())
+							conditionalRead(reader, {classes.add(it)})
 						}
 						reader.endArray()
 					}
 					"href" -> {
-						href = reader.nextString()
+						conditionalRead(reader, {href = it})
 					}
 					"title" -> {
 						title = reader.nextString()
