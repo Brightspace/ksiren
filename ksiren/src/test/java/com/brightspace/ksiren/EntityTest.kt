@@ -38,7 +38,7 @@ class EntityTest {
 		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
 		assertTrue(entity.actions.isEmpty())
 		assertTrue(entity.links.isNotEmpty())
-		assertTrue(entity.properties.size == 3)
+		assertTrue(entity.properties.size == 1)
 		assertEquals(listOf("order"), entity.classes)
 	}
 

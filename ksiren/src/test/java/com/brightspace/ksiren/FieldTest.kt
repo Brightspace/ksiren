@@ -44,7 +44,7 @@ class FieldTest {
 		val field: Field = Field.fromJson("""{ "name": "expressShipping", "type": "checkbox", "value": null }""".toKSirenJsonReader())
 		assertEquals("expressShipping", field.name)
 		assertEquals("checkbox", field.type)
-		assertEquals("", field.value)
+		assertEquals(null, field.value)
 	}
 
     @Test
