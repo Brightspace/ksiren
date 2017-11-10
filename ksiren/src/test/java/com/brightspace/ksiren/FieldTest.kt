@@ -3,6 +3,7 @@ package com.brightspace.ksiren
 import com.squareup.moshi.JsonEncodingException
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Copyright 2017 D2L Corporation
@@ -22,10 +23,12 @@ import kotlin.test.assertEquals
 class FieldTest {
     @Test
     fun expectField() {
-        val field: Field = Field.fromJson("""{ "name": "orderNumber", "type": "hidden", "value": "42" }""".toKSirenJsonReader())
+        val field: Field = Field.fromJson("""{ "class":["class1", "class2"], "name": "orderNumber", "type": "hidden", "value": "42" }""".toKSirenJsonReader())
         assertEquals("orderNumber", field.name)
         assertEquals("hidden", field.type)
         assertEquals("42", field.value)
+        assertTrue(field.classes.contains("class1"))
+        assertTrue(field.classes.contains("class2"))
     }
 
 	@Test
@@ -34,6 +37,14 @@ class FieldTest {
 		assertEquals("expressShipping", field.name)
 		assertEquals("checkbox", field.type)
 		assertEquals("false", field.value)
+	}
+
+	@Test
+	fun nullParseTest() {
+		val field: Field = Field.fromJson("""{ "name": "expressShipping", "type": "checkbox", "value": null }""".toKSirenJsonReader())
+		assertEquals("expressShipping", field.name)
+		assertEquals("checkbox", field.type)
+		assertEquals(null, field.value)
 	}
 
     @Test

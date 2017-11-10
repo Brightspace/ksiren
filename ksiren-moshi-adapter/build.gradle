@@ -2,10 +2,10 @@ def group = "com.brightspace.ksiren"
 def artifactName = "ksiren-moshi-adapter"
 def vcsUrlSetting = "https://github.com/Brightspace/ksiren/"
 def description = 'Adapter to enable KSiren to parse Siren entities from JSON using Moshi.'
-def versionValue = "1.1.0-beta2"
+def versionValue = "1.1.0-beta3"
 
 dependencies {
-	compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.3-2'
+	compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.51'
 	compile 'com.squareup.moshi:moshi:1.5.0'
 	implementation 'javax.annotation:jsr250-api:1.0'
 

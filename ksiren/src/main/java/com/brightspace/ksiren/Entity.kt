@@ -44,14 +44,18 @@ class Entity(
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							classes.add(reader.nextString())
+							conditionalRead(reader, {classes.add(it)})
 						}
 						reader.endArray()
 					}
 					"properties" -> {
 						reader.beginObject()
 						while (reader.hasNext()) {
-							properties.put(reader.nextName(), reader.nextString())
+							val propName = reader.nextName()
+							val value = reader.nextString()
+							if (value != null) {
+								properties.put(propName, value)
+							}
 						}
 						reader.endObject()
 					}
@@ -86,7 +90,7 @@ class Entity(
 					"rel" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							rel.add(reader.nextString())
+							conditionalRead(reader, {rel.add(it)})
 						}
 						reader.endArray()
 					}

@@ -2,6 +2,8 @@ package com.brightspace.ksiren
 
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Copyright 2017 D2L Corporation
@@ -26,6 +28,8 @@ class LinkTest {
 
         assertEquals(listOf("self"), link.rels)
         assertEquals("http://api.x.io/orders/42", link.href)
+		assertTrue(link.hasClass("link"))
+		assertFalse(link.hasClass("notLink"))
     }
 
     @Test
