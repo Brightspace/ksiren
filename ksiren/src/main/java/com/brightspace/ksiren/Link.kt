@@ -81,6 +81,10 @@ class Link(
 		return rels.containsAll(rel.toList())
 	}
 
+	fun hasClass(vararg clazz: String): Boolean {
+		return classes.containsAll(clazz.toList())
+	}
+
 	override fun toJson(): CharSequence {
 		return JsonUtils.toJson(this)
 	}
