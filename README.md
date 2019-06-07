@@ -1,5 +1,5 @@
 # KSiren
-[ ![Kotlin](https://img.shields.io/badge/Kotlin-1.1.51-blue.svg)](http://kotlinlang.org)
+[ ![Kotlin](https://img.shields.io/badge/Kotlin-1.3.31-blue.svg)](http://kotlinlang.org)
 ![Build status](https://travis-ci.com/Brightspace/ksiren.svg?token=bx5yfkuXAPjvTyLvsLn4&branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/Brightspace/ksiren/badge.svg?branch=master)](https://coveralls.io/github/Brightspace/ksiren?branch=master)
 [![Download](https://api.bintray.com/packages/brightspace/ksiren/ksiren/images/download.svg) ](https://bintray.com/brightspace/ksiren/ksiren/_latestVersion)
@@ -14,12 +14,12 @@ Options for getting started:
 * Clone the repo: `git clone https://github.com/Brightspace/ksiren.git`.
 * Include the library in your project with gradle:
 ```
-compile 'com.brightspace.ksiren:ksiren:1.0.0'
+compile 'com.brightspace.ksiren:ksiren:1.1.0'
 ```
 You must import, or create yourself, a JSON parsing plugin; adapters for moshi and gson are available and can be pulled in using one of the following gradle compile commands:
 ```
-compile 'com.brightspace.ksiren:ksiren-moshi-adapter:1.0.0'
-compile 'com.brightspace.ksiren:ksiren-gson-adapter:1.0.0'
+compile 'com.brightspace.ksiren:ksiren-moshi-adapter:1.1.0'
+compile 'com.brightspace.ksiren:ksiren-gson-adapter:1.1.0'
 ```
 
 Optionally, you can include, or create, a request building plugin; an adapter for okhttp3 is available:
