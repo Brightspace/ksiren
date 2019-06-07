@@ -46,8 +46,9 @@ class Field(
 						conditionalRead(reader) { type = it }
 					}
 					"value" -> {
-						value = tryExecuteParsingLambdas(reader,
+						value = tryParseWithLambdasAsString(reader,
 							{ it.nextString() },
+							{ it.nextBoolean() },
 							{ readAndReserializeArray(it) })
 
 					}

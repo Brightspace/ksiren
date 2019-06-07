@@ -1,9 +1,9 @@
 package com.brightspace.ksiren
 
-fun tryExecuteParsingLambdas(reader: KSirenJsonReader, vararg mappers: (KSirenJsonReader) -> String?): String? {
-	for (mapper in mappers) {
+fun tryParseWithLambdasAsString(reader: KSirenJsonReader, vararg parsingLambdas: (KSirenJsonReader) -> String?): String? {
+	for (parser in parsingLambdas) {
 		try {
-			return mapper.invoke(reader)
+			return parser.invoke(reader)
 		} catch (e: Exception) {
 			//this mapper failed
 		}

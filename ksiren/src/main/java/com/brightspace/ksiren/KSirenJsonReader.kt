@@ -30,13 +30,7 @@ abstract class KSirenJsonReader {
 		try {
 			return nextStringImpl()
 		} catch (e: Exception) {
-			//Do nothing, try reading booleans and nulls first
-		}
-
-		try {
-			return nextBoolean()
-		} catch (e: Exception) {
-			//Do nothing, try reading nulls first
+			//Do nothing, try reading as nulls first
 		}
 
 		try {
@@ -48,7 +42,7 @@ abstract class KSirenJsonReader {
 	}
 
 	abstract fun nextStringImpl(): String
-	abstract protected fun nextBoolean(): String
+	abstract fun nextBoolean(): String
 	abstract protected fun nextNull()
 
 }
