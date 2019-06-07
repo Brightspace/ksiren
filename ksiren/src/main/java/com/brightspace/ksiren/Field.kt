@@ -46,7 +46,24 @@ class Field(
 						conditionalRead(reader, {type = it})
 					}
 					"value" -> {
-						value = reader.nextString()
+						try {
+							value = reader.nextString()
+						}catch (e: Exception){
+							//check for array types
+							try{
+								var arrayList: MutableList<String> = mutableListOf()
+								reader.beginArray()
+								while (reader.hasNext()) {
+									conditionalRead(reader, {arrayList.add(it)})
+								}
+								reader.endArray()
+								value = arrayList.joinToString(prefix= "[", postfix="]", separator=", " )
+							} catch (e: Exception){
+								// Portfolio does not support object types in the value field
+								throw KSirenException.ParseException(e.message?:"Could not parse value as String or list. Portfolio does not support object types")
+							}
+						}
+
 					}
 				}
 			}
