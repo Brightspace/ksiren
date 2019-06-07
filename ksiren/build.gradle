@@ -5,10 +5,10 @@ def group = "com.brightspace.ksiren"
 def artifactName = "ksiren"
 def vcsUrlSetting = "https://github.com/Brightspace/ksiren/"
 def description = 'Main package of KSiren: A Kotlin library for parsing responses from Siren API endpoints and building Siren Action requests.'
-def versionValue = "1.1.0-beta3"
+def versionValue = "1.1.0"
 
 dependencies {
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.51'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.31'
 
 	testCompile project(':ksiren-moshi-adapter')
 	testCompile project(':ksiren-okhttp3-plugin')

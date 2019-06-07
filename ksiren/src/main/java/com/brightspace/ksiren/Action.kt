@@ -63,14 +63,14 @@ class Action(
 					"fields" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							fields.add(Field.Companion.fromJson(reader))
+							fields.add(Field.fromJson(reader))
 						}
 						reader.endArray()
 					}
 				}
 			}
 			reader.endObject()
-			val finishedAction: Action = Action(name, classes, method, href, title, type, fields)
+			val finishedAction = Action(name, classes, method, href, title, type, fields)
 			return validate(finishedAction)
 		}
 

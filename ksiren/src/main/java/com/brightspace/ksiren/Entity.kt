@@ -39,12 +39,11 @@ class Entity(
 
 			reader.beginObject()
 			while (reader.hasNext()) {
-				val name = reader.nextName()
-				when (name) {
+				when (reader.nextName()) {
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {classes.add(it)})
+							conditionalRead(reader) {classes.add(it)}
 						}
 						reader.endArray()
 					}
@@ -52,9 +51,19 @@ class Entity(
 						reader.beginObject()
 						while (reader.hasNext()) {
 							val propName = reader.nextName()
-							val value = reader.nextString()
-							if (value != null) {
-								properties.put(propName, value)
+							try {
+								val value = tryParseWithLambdasAsString(reader, {it.nextString()}, {it.nextBoolean()})
+								if (value != null) {
+									properties[propName] = value
+								}
+							} catch (e: KSirenException) {
+								reader.beginArray()
+								while (reader.hasNext()) {
+									tryParseWithLambdasAsString(reader, {it.nextString()}, {it.nextBoolean()})
+								}
+								reader.endArray()
+								//HACK: Just skip this entry, it's probably an array or an object
+								// and we don't support those in properties right now
 							}
 						}
 						reader.endObject()
@@ -69,18 +78,18 @@ class Entity(
 					"actions" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							val action: Action = Action.Companion.fromJson(reader)
+							val action: Action = Action.fromJson(reader)
 							if (actions.keys.contains(action.name)) {
 								throw KSirenException.ValidationException("Entity action names must be unique.")
 							}
-							actions.put(action.name, action)
+							actions[action.name] = action
 						}
 						reader.endArray()
 					}
 					"links" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							links.add(Link.Companion.fromJson(reader))
+							links.add(Link.fromJson(reader))
 						}
 						reader.endArray()
 					}

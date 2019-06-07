@@ -33,20 +33,24 @@ class Field(
 			while (reader.hasNext()) {
 				when (reader.nextName()) {
 					"name" -> {
-						conditionalRead(reader, {name = it})
+						conditionalRead(reader) {name = it}
 					}
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {classes.add(it)})
+							conditionalRead(reader) { classes.add(it) }
 						}
 						reader.endArray()
 					}
 					"type" -> {
-						conditionalRead(reader, {type = it})
+						conditionalRead(reader) { type = it }
 					}
 					"value" -> {
-						value = reader.nextString()
+						value = tryParseWithLambdasAsString(reader,
+							{ it.nextString() },
+							{ it.nextBoolean() },
+							{ readAndReserializeArray(it) })
+
 					}
 				}
 			}

@@ -32,6 +32,16 @@ class FieldTest {
     }
 
 	@Test
+	fun expectFieldValueArray() {
+		val field: Field = Field.fromJson("""{ "class":["class1", "class2"], "name": "orderNumber", "type": "hidden", "value": "[42]" }""".toKSirenJsonReader())
+		assertEquals("orderNumber", field.name)
+		assertEquals("hidden", field.type)
+		assertEquals("[42]", field.value)
+		assertTrue(field.classes.contains("class1"))
+		assertTrue(field.classes.contains("class2"))
+	}
+
+	@Test
 	fun booleanParseTest() {
 		val field: Field = Field.fromJson("""{ "name": "expressShipping", "type": "checkbox", "value": false }""".toKSirenJsonReader())
 		assertEquals("expressShipping", field.name)
