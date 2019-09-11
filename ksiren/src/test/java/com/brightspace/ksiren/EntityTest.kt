@@ -42,6 +42,43 @@ class EntityTest {
 		assertEquals(listOf("order"), entity.classes)
 	}
 
+	@Test
+	fun expectIgnoreArrayProperties() = expectIgnoreProperty("""["a", "b", "c"]""")
+
+	@Test
+	fun expectIgnoreObjectProperties() = expectIgnoreProperty("""{"foo": "bar", "fizz": "buzz"}""")
+
+	@Test
+	fun expectIgnoreArrayInArrayProperty() = expectIgnoreProperty("""["a", ["foo", "bar"], "c"]""")
+
+	@Test
+	fun expectIgnoreObjectInArrayProperty() = expectIgnoreProperty("""["a", {"foo": "bar"}, "c"]""")
+
+	@Test
+	fun expectIgnoreArrayInObjectProperty() = expectIgnoreProperty("""{"foo": "bar", "baz": ["bing", "fling"], "fizz": "buzz"}""")
+
+	@Test
+	fun expectIgnoreObjectInObjectProperty() = expectIgnoreProperty("""{"foo": "bar", "baz": {"bing": "fling"}, "fizz": "buzz"}""")
+
+	fun expectIgnoreProperty(ignoredPropertyJson: String) {
+		val json = """{ "class": [ "order" ], "properties": { "orderNumber": "42", "ignoredProperty": """ + ignoredPropertyJson + """, "status": "pending" }, "links": [{ "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }] }"""
+		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
+		assertEquals(mapOf("orderNumber" to "42", "status" to "pending"), entity.properties)
+		assertEquals(listOf("order"), entity.classes)
+		assertTrue(entity.actions.isEmpty())
+		assertTrue(entity.links.isNotEmpty())
+	}
+
+	@Test
+	fun expectHandleNumber() {
+		val json = """{ "class": [ "order" ], "properties": { "orderNumber": 42, "status": "pending" }, "links": [{ "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }] }"""
+		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
+		assertEquals(mapOf("orderNumber" to "42", "status" to "pending"), entity.properties)
+		assertEquals(listOf("order"), entity.classes)
+		assertTrue(entity.actions.isEmpty())
+		assertTrue(entity.links.isNotEmpty())
+	}
+
     @Test
     fun serializeToJson() {
         // the parser cannot handle linked entities

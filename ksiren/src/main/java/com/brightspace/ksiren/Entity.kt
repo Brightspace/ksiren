@@ -51,19 +51,8 @@ class Entity(
 						reader.beginObject()
 						while (reader.hasNext()) {
 							val propName = reader.nextName()
-							try {
-								val value = tryParseWithLambdasAsString(reader, {it.nextString()}, {it.nextBoolean()})
-								if (value != null) {
-									properties[propName] = value
-								}
-							} catch (e: KSirenException) {
-								reader.beginArray()
-								while (reader.hasNext()) {
-									tryParseWithLambdasAsString(reader, {it.nextString()}, {it.nextBoolean()})
-								}
-								reader.endArray()
-								//HACK: Just skip this entry, it's probably an array or an object
-								// and we don't support those in properties right now
+							tryParsePropertyValue(reader)?.let { value ->
+								properties[propName] = value
 							}
 						}
 						reader.endObject()
@@ -110,6 +99,29 @@ class Entity(
 			}
 			reader.endObject()
 			return Entity(classes, properties, entities, rel, actions, links, href, title)
+		}
+
+		private fun ignoreArray(reader: KSirenJsonReader): String? {
+			reader.beginArray()
+			while (reader.hasNext()) {
+				tryParsePropertyValue(reader)
+			}
+			reader.endArray()
+			return null
+		}
+
+		private fun ignoreObject(reader: KSirenJsonReader): String? {
+			reader.beginObject()
+			while (reader.hasNext()) {
+				reader.nextName()
+				tryParsePropertyValue(reader)
+			}
+			reader.endObject()
+			return null
+		}
+
+		private fun tryParsePropertyValue(reader: KSirenJsonReader): String? {
+			return tryParseWithLambdasAsString(reader, { it.nextString() }, { it.nextBoolean() }, ::ignoreArray, ::ignoreObject)
 		}
 	}
 
