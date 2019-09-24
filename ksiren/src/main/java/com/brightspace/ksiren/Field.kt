@@ -48,7 +48,7 @@ class Field(
 					"value" -> {
 						value = tryParseWithLambdasAsString(reader,
 							{ it.nextString() },
-							{ it.nextBoolean() },
+							{ it.nextBoolean().toString() },
 							{ readAndReserializeArray(it) })
 
 					}
