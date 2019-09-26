@@ -1,6 +1,8 @@
 package com.brightspace.ksiren
 
-sealed class PropertyValue
+sealed class PropertyValue : JsonSerializable {
+	override fun toJson() = JsonUtils.toJson(this)
+}
 
 data class StringValue(val stringValue: String) : PropertyValue()
 

@@ -65,13 +65,4 @@ class FieldTest {
             assert(true)
         }
     }
-
-    @Test
-    fun serializeToJson() {
-        val json = """{ "name": "orderNumber", "type": "hidden", "value": "42" }"""
-        val field = Field.fromJson(json.toKSirenJsonReader())
-
-        // order of properties matters...
-        assertEquals(json, field.toJson())
-    }
 }

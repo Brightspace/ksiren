@@ -15,7 +15,7 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Action(
+data class Action(
 	val name: String,
 	val classes: List<String> = listOf(),
 	val method: String = "GET",
@@ -95,7 +95,5 @@ class Action(
 		return false
 	}
 
-	override fun toJson(): CharSequence {
-		return JsonUtils.toJson(this)
-	}
+	override fun toJson() = JsonUtils.toJson(this)
 }

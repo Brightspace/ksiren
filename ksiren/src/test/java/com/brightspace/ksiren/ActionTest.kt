@@ -52,13 +52,4 @@ class ActionTest {
         assertTrue(action.hasField("productCode"))
         assertTrue(action.hasField("quantity"))
     }
-
-    @Test
-    fun serializeToJson() {
-        val json: String = """{ "name": "add-item", "title": "Add Item", "method": "POST", "href": "http://api.x.io/orders/42/items", "type": "application/x-www-form-urlencoded", "fields": [{ "name": "orderNumber", "type": "hidden", "value": "42" }, { "name": "productCode", "type": "text" }, { "name": "quantity", "type": "number" }] }"""
-        val action = Action.fromJson(json.toKSirenJsonReader())
-
-        // order of properties matters...
-        assertEquals(json, action.toJson())
-    }
 }

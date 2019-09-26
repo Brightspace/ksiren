@@ -15,148 +15,71 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-object JsonUtils {
-	fun toJson(entity: Entity): CharSequence {
-		val builder = StringBuilder()
-		builder.append("{ ")
+internal object JsonUtils {
+	fun toJson(entity: Entity) = listOf(
+			"class" to entity.classes.toJson(),
+			"rel" to entity.rel.toJson(),
+			"properties" to entity.enhancedProperties.toJson(),
+			"entities" to entity.entities.toJson(),
+			"actions" to entity.actions.values.toJson(),
+			"links" to entity.links.toJson()
+		)
+		.toJsonObject()
 
-		addArray("class", entity.classes, false, builder)
+	fun toJson(link: Link) = listOf(
+			"rel" to link.rels.toJson(),
+			"class" to link.classes.toJson(),
+			"title" to link.title.toJson(),
+			"type" to link.type.toJson(),
+			"href" to link.href.toJson()
+		).toJsonObject()
 
-		addArray("rel", entity.rel, true, builder)
+	fun toJson(action: Action) = listOf(
+			"name" to action.name.toJson(),
+			"title" to action.title.toJson(),
+			"class" to action.classes.toJson(),
+			"method" to action.method.toJson(),
+			"href" to action.href.toJson(),
+			"type" to action.type.value.toJson(),
+			"fields" to action.fields.toJson()
+		).toJsonObject()
 
-		if (!entity.properties.isEmpty()) {
-			builder.append(", \"properties\": { ")
+	fun toJson(field: Field) = listOf(
+			"name" to field.name.toJson(),
+			"class" to field.classes.toJson(),
+			"type" to field.type.toJson(),
+			"value" to field.value.toJson()
+		).toJsonObject()
 
-			var count = 0
-			entity.properties.forEach { (name, value) ->
-				addProperty(name, value, count > 0, builder)
-				count += 1
-			}
-
-			builder.append(" }")
-		}
-
-		addJsonSerializable("entities", entity.entities, builder)
-		addJsonSerializable("actions", entity.actions.values, builder)
-		addJsonSerializable("links", entity.links, builder)
-
-		builder.append(" }")
-
-		return builder.toString()
+	fun toJson(propertyValue: PropertyValue): String? = when(propertyValue) {
+		is StringValue -> propertyValue.stringValue.toJson()
+		is BooleanValue -> propertyValue.booleanValue.toString()
+		is ArrayValue -> propertyValue.arrayElements.toJson()
+		is ObjectValue -> propertyValue.objectProperties.toJson()
 	}
 
-	fun toJson(link: Link): CharSequence {
-		val builder = StringBuilder()
-		builder.append("{ ")
+	private fun String?.toJson() = if (this != null && isNotEmpty()) "\"$this\"" else null
 
-		addArray("rel", link.rels, false, builder)
-		addArray("class", link.classes, true, builder)
-		addProperty("title", link.title, true, builder)
-		addProperty("type", link.type, true, builder)
-		addProperty("href", link.href, true, builder)
-		builder.append(" }")
+	private fun List<String>.toJson() = toJsonArray { "\"$it\"" }
 
-		return builder.toString()
-	}
+	private fun Collection<JsonSerializable>.toJson() = mapNotNull { it.toJson() }.toJsonArray()
 
-	fun toJson(action: Action): CharSequence {
-		val builder = StringBuilder()
-		builder.append("{ ")
+	private fun List<String>.toJsonArray(transform: (String) -> String = { it })
+		= if (isNotEmpty()) joinToString(prefix = "[", postfix = "]", transform = transform) else null
 
-		addProperty("name", action.name, false, builder)
-		addProperty("title", action.title, true, builder)
-		addArray("classes", action.classes, true, builder)
-		addProperty("method", action.method, true, builder)
-		addProperty("href", action.href, true, builder)
-		addProperty("type", action.type.value, true, builder)
+	private fun Map<String, PropertyValue>.toJson(): String? =
+		mapValues { entry -> entry.value.toJson() }
+			.entries
+			.map { entry -> entry.toPair() }
+			.toJsonObject()
 
-		if (!action.fields.isEmpty()) {
-			builder.append(", \"fields\": [")
-			action.fields.forEachIndexed { index, field ->
-				if (index > 0) {
-					builder.append(", ")
-				}
-
-				builder.append(toJson(field))
-			}
-			builder.append("]")
-		}
-
-		builder.append(" }")
-
-		return builder.toString()
-	}
-
-	fun toJson(field: Field): CharSequence {
-		val builder = StringBuilder()
-		builder.append("{ ")
-
-		addProperty("name", field.name, false, builder)
-		addArray("class", field.classes, true, builder)
-		addProperty("type", field.type, true, builder)
-		addProperty("value", field.value, true, builder)
-
-		builder.append(" }")
-		return builder.toString()
-	}
-
-	private fun addProperty(name: String, value: String?, prependComma: Boolean, builder: StringBuilder) {
-		value?.let {
-			if (prependComma) {
-				builder.append(", \"")
-			} else {
-				builder.append("\"")
-			}
-
-			builder.append(name)
-			builder.append("\": \"")
-			builder.append(it)
-			builder.append("\"")
-		}
-	}
-
-	fun addArray(name: String, array: List<String>, prependComma: Boolean, builder: StringBuilder) {
-		if (array.isEmpty()) {
-			return
-		}
-
-		if (prependComma) {
-			builder.append(", \"")
-		} else {
-			builder.append("\"")
-		}
-
-		builder.append(name)
-		builder.append("\": [ ")
-		array.forEachIndexed { index, value ->
-			if (index > 0) {
-				builder.append(", ")
-			}
-
-			builder.append("\"")
-			builder.append(value)
-			builder.append("\"")
-		}
-		builder.append(" ]")
-	}
-
-	private fun addJsonSerializable(name: String, items: Collection<JsonSerializable>, builder: StringBuilder) {
-		if (!items.isEmpty()) {
-			builder.append(", \"").append(name).append("\": [")
-
-			items.forEachIndexed { index, item ->
-				if (index > 0) {
-					builder.append(", ")
-				}
-
-				builder.append(item.toJson())
-			}
-
-			builder.append("]")
-		}
-	}
+	private fun List<Pair<String, String?>>.toJsonObject() =
+		if (isNotEmpty())
+			mapNotNull { pair -> pair.second?.let { json -> pair.first to json } }
+				.joinToString(prefix = "{", postfix = "}") { "\"${it.first}\": ${it.second}" }
+		else null
 }
 
 interface JsonSerializable {
-	fun toJson(): CharSequence
+	fun toJson(): String?
 }

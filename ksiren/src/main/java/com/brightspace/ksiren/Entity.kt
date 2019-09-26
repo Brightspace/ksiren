@@ -15,9 +15,8 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Entity(
+data class Entity internal constructor(
 	val classes: List<String> = listOf(),
-	val properties: Map<String, String> = mapOf(),
 	val enhancedProperties: Map<String, PropertyValue> = mapOf(),
 	val entities: List<Entity> = listOf(),
 	val rel: List<String> = listOf(),
@@ -25,6 +24,21 @@ class Entity(
 	val links: List<Link> = listOf(),
 	val href: String?,
 	val title: String?) : JsonSerializable {
+
+	// For on-demand backwards-compatibility
+	val properties: Map<String, String> by lazy {
+		enhancedProperties
+			.mapNotNull { entry ->
+				entry.value.let { propertyValue ->
+					when (propertyValue) {
+						is StringValue -> entry.key to propertyValue.stringValue
+						is BooleanValue -> entry.key to propertyValue.booleanValue.toString()
+						else -> null
+					}
+				}
+			}
+			.toMap()
+	}
 
 	companion object {
 
@@ -99,19 +113,8 @@ class Entity(
 				}
 			}
 			reader.endObject()
-			val properties = enhancedProperties
-				.mapNotNull { entry ->
-					entry.value.let { propertyValue ->
-						when (propertyValue) {
-							is StringValue -> entry.key to propertyValue.stringValue
-							is BooleanValue -> entry.key to propertyValue.booleanValue.toString()
-							else -> null
-						}
-					}
-				}
-				.toMap()
 
-			return Entity(classes, properties, enhancedProperties, entities, rel, actions, links, href, title)
+			return Entity(classes, enhancedProperties, entities, rel, actions, links, href, title)
 		}
 
 		private fun parseEnhancedPropertyValue(reader: KSirenJsonReader): PropertyValue? {
@@ -155,7 +158,5 @@ class Entity(
 		}
 	}
 
-	override fun toJson(): CharSequence {
-		return JsonUtils.toJson(this)
-	}
+	override fun toJson() = JsonUtils.toJson(this)
 }
