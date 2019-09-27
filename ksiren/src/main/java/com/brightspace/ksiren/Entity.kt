@@ -15,9 +15,9 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Entity(
+data class Entity internal constructor(
 	val classes: List<String> = listOf(),
-	val properties: Map<String, String> = mapOf(),
+	val enhancedProperties: Map<String, PropertyValue> = mapOf(),
 	val entities: List<Entity> = listOf(),
 	val rel: List<String> = listOf(),
 	val actions: Map<String, Action> = mapOf(),
@@ -25,11 +25,26 @@ class Entity(
 	val href: String?,
 	val title: String?) : JsonSerializable {
 
+	// For on-demand backwards-compatibility
+	val properties: Map<String, String> by lazy {
+		enhancedProperties
+			.mapNotNull { entry ->
+				entry.value.let { propertyValue ->
+					when (propertyValue) {
+						is StringValue -> entry.key to propertyValue.stringValue
+						is BooleanValue -> entry.key to propertyValue.booleanValue.toString()
+						else -> null
+					}
+				}
+			}
+			.toMap()
+	}
+
 	companion object {
 
 		fun fromJson(reader: KSirenJsonReader): Entity {
 			val classes: MutableList<String> = mutableListOf()
-			val properties: MutableMap<String, String> = mutableMapOf()
+			val enhancedProperties: MutableMap<String, PropertyValue> = mutableMapOf()
 			val entities: MutableList<Entity> = mutableListOf()
 			val rel: MutableList<String> = mutableListOf()
 			val actions: MutableMap<String, Action> = mutableMapOf()
@@ -51,8 +66,8 @@ class Entity(
 						reader.beginObject()
 						while (reader.hasNext()) {
 							val propName = reader.nextName()
-							tryParsePropertyValue(reader)?.let { value ->
-								properties[propName] = value
+							parseEnhancedPropertyValue(reader)?.let { value ->
+								enhancedProperties[propName] = value
 							}
 						}
 						reader.endObject()
@@ -98,34 +113,50 @@ class Entity(
 				}
 			}
 			reader.endObject()
-			return Entity(classes, properties, entities, rel, actions, links, href, title)
+
+			return Entity(classes, enhancedProperties, entities, rel, actions, links, href, title)
 		}
 
-		private fun ignoreArray(reader: KSirenJsonReader): String? {
+		private fun parseEnhancedPropertyValue(reader: KSirenJsonReader): PropertyValue? {
+			return tryParseWithLambdasAsPropertyValue(reader, ::parseString, ::parseBoolean, ::parseArray, ::parseObject)
+		}
+
+		private fun tryParseWithLambdasAsPropertyValue(reader: KSirenJsonReader, vararg parsingLambdas: (KSirenJsonReader) -> PropertyValue?): PropertyValue? {
+			for (parser in parsingLambdas) {
+				try {
+					return parser.invoke(reader)
+				} catch (e: Exception) {
+					//this mapper failed
+				}
+			}
+			throw KSirenException.ParseException("Could not parse PropertyValue")
+		}
+
+		private fun parseString(reader: KSirenJsonReader): StringValue? = reader.nextString()?.let { StringValue(it) }
+
+		private fun parseBoolean(reader: KSirenJsonReader) = BooleanValue.from(reader.nextBoolean())
+
+		private fun parseArray(reader: KSirenJsonReader): ArrayValue {
+			val elements = mutableListOf<PropertyValue>()
 			reader.beginArray()
 			while (reader.hasNext()) {
-				tryParsePropertyValue(reader)
+				parseEnhancedPropertyValue(reader)?.let { value -> elements.add(value) }
 			}
 			reader.endArray()
-			return null
+			return ArrayValue(elements)
 		}
 
-		private fun ignoreObject(reader: KSirenJsonReader): String? {
+		private fun parseObject(reader: KSirenJsonReader): ObjectValue {
+			val values = mutableMapOf<String, PropertyValue>()
 			reader.beginObject()
 			while (reader.hasNext()) {
-				reader.nextName()
-				tryParsePropertyValue(reader)
+				val name = reader.nextName()
+				parseEnhancedPropertyValue(reader)?.let { value -> values[name] = value }
 			}
 			reader.endObject()
-			return null
-		}
-
-		private fun tryParsePropertyValue(reader: KSirenJsonReader): String? {
-			return tryParseWithLambdasAsString(reader, { it.nextString() }, { it.nextBoolean() }, ::ignoreArray, ::ignoreObject)
+			return ObjectValue(values)
 		}
 	}
 
-	override fun toJson(): CharSequence {
-		return JsonUtils.toJson(this)
-	}
+	override fun toJson() = JsonUtils.toJson(this)
 }

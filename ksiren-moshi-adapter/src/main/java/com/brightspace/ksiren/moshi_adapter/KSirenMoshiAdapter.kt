@@ -52,8 +52,8 @@ class KSirenMoshiAdapter(val moshiReader: JsonReader) : KSirenJsonReader() {
 		}
 	}
 
-	override fun nextBoolean(): String {
-		return moshiReader.nextBoolean().toString()
+	override fun nextBoolean(): Boolean {
+		return moshiReader.nextBoolean()
 	}
 
 	override fun nextNull() {

@@ -42,7 +42,7 @@ abstract class KSirenJsonReader {
 	}
 
 	abstract fun nextStringImpl(): String
-	abstract fun nextBoolean(): String
+	abstract fun nextBoolean(): Boolean
 	abstract protected fun nextNull()
 
 }

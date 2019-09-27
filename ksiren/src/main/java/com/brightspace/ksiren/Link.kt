@@ -15,7 +15,7 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Link(
+data class Link(
 	val rels: List<String>,
 	val classes: List<String> = listOf(),
 	val href: String,
@@ -85,7 +85,5 @@ class Link(
 		return classes.containsAll(clazz.toList())
 	}
 
-	override fun toJson(): CharSequence {
-		return JsonUtils.toJson(this)
-	}
+	override fun toJson() = JsonUtils.toJson(this)
 }

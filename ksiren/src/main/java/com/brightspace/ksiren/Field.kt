@@ -15,11 +15,11 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Field(
+data class Field(
 	val name: String,
 	val classes: List<String> = listOf(),
 	val type: String = "text",
-	val value: String?) {
+	val value: String?) : JsonSerializable {
 
 	companion object {
 
@@ -48,7 +48,7 @@ class Field(
 					"value" -> {
 						value = tryParseWithLambdasAsString(reader,
 							{ it.nextString() },
-							{ it.nextBoolean() },
+							{ it.nextBoolean().toString() },
 							{ readAndReserializeArray(it) })
 
 					}
@@ -67,7 +67,5 @@ class Field(
 		}
 	}
 
-	fun toJson(): CharSequence {
-		return JsonUtils.toJson(this)
-	}
+	override fun toJson() = JsonUtils.toJson(this)
 }

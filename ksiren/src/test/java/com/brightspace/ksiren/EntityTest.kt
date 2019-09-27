@@ -70,6 +70,17 @@ class EntityTest {
 	}
 
 	@Test
+	fun expectHandleBooleanAsAsString() {
+		val truePropertyName = "trueProperty"
+		val falsePropertyName = "falseProperty"
+		val json = """{ "properties": { "$truePropertyName": true, "$falsePropertyName": false } }"""
+		val entity = Entity.fromJson(json.toKSirenJsonReader())
+		assertEquals(
+			actual = entity.properties,
+			expected = mapOf(truePropertyName to "true", falsePropertyName to "false"))
+	}
+
+	@Test
 	fun expectHandleNumber() {
 		val json = """{ "class": [ "order" ], "properties": { "orderNumber": 42, "status": "pending" }, "links": [{ "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }] }"""
 		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
@@ -78,15 +89,4 @@ class EntityTest {
 		assertTrue(entity.actions.isEmpty())
 		assertTrue(entity.links.isNotEmpty())
 	}
-
-    @Test
-    fun serializeToJson() {
-        // the parser cannot handle linked entities
-        // { "class": [ "items", "collection" ], "rel": [ "http://x.io/rels/order-items" ], "href": "http://api.x.io/orders/42/items"},
-        val json = """{ "class": [ "order" ], "properties": { "orderNumber": "42", "itemCount": "3", "status": "pending" }, "entities": [{ "class": [ "info", "customer" ], "rel": [ "http://x.io/rels/customer" ], "properties": { "customerId": "pj123", "name": "Peter Joseph" }, "links": [{ "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }] }], "actions": [{ "name": "add-item", "title": "Add Item", "method": "POST", "href": "http://api.x.io/orders/42/items", "type": "application/x-www-form-urlencoded", "fields": [{ "name": "orderNumber", "type": "hidden", "value": "42" }, { "name": "productCode", "type": "text" }, { "name": "quantity", "type": "number" }] }], "links": [{ "rel": [ "self" ], "href": "http://api.x.io/orders/42" }, { "rel": [ "previous" ], "href": "http://api.x.io/orders/41" }, { "rel": [ "next" ], "href": "http://api.x.io/orders/43" }] }"""
-        val entity = Entity.fromJson(json.toKSirenJsonReader())
-
-        // order of properties matters...
-        assertEquals(json, entity.toJson())
-    }
 }

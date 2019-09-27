@@ -48,8 +48,8 @@ class KSirenGsonAdapter(val gsonReader: JsonReader) : KSirenJsonReader() {
 		return gsonReader.nextString()
 	}
 
-	override fun nextBoolean(): String {
-		return gsonReader.nextBoolean().toString()
+	override fun nextBoolean(): Boolean {
+		return gsonReader.nextBoolean()
 	}
 
 	override fun nextNull() {

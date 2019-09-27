@@ -31,13 +31,4 @@ class LinkTest {
 		assertTrue(link.hasClass("link"))
 		assertFalse(link.hasClass("notLink"))
     }
-
-    @Test
-    fun serializeToJson() {
-        val json = """{ "rel": [ "self" ], "class": [ "link" ], "title": "my link", "type": "text/plain", "href": "http://api.x.io/orders/42" }"""
-        val link = Link.fromJson(json.toKSirenJsonReader())
-
-        // order of properties matters...
-        assertEquals(json, link.toJson())
-    }
 }
