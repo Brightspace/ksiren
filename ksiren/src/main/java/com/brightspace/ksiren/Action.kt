@@ -15,14 +15,35 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+interface ActionBase : JsonSerializable {
+	val name: String
+	val classes: List<String>
+	val method: String
+	val href: String
+	val title: String?
+	val type: ContentType
+	val fields: List<FieldBase>
+
+	fun hasField(name: String): Boolean = this.fields.any() { it.name == name }
+
+	fun toJsonRequestBody(): String? =
+		if (fields?.isNotEmpty())
+			fields?.mapNotNull { field -> field.value?.let { json -> field.name to json } }
+				.joinToString(prefix = "{", postfix = "}") { "\"${it.first}\": \"${JsonUtils.escapeJson(it.second)}\"" }
+		else null
+
+	override fun toJson() = JsonUtils.toJson(this)
+}
+
 data class Action(
-	val name: String,
-	val classes: List<String> = listOf(),
-	val method: String = "GET",
-	val href: String,
-	val title: String?,
-	val type: ContentType = ContentType.FORM,
-	val fields: List<Field> = listOf()) : JsonSerializable {
+	override val name: String,
+	override val classes: List<String> = listOf(),
+	override val method: String = "GET",
+	override val href: String,
+	override val title: String?,
+	override val type: ContentType = ContentType.FORM,
+	override val fields: List<Field> = listOf()) : ActionBase {
 
 	companion object {
 
@@ -41,24 +62,24 @@ data class Action(
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {classes.add(it)})
+							conditionalRead(reader, { classes.add(it) })
 						}
 						reader.endArray()
 					}
 					"name" -> {
-						conditionalRead(reader, {name = it})
+						conditionalRead(reader, { name = it })
 					}
 					"method" -> {
-						conditionalRead(reader, {method = it})
+						conditionalRead(reader, { method = it })
 					}
 					"href" -> {
-						conditionalRead(reader, {href = it})
+						conditionalRead(reader, { href = it })
 					}
 					"title" -> {
 						title = reader.nextString()
 					}
 					"type" -> {
-						conditionalRead(reader, {type = ContentType.parse(it)})
+						conditionalRead(reader, { type = ContentType.parse(it) })
 					}
 					"fields" -> {
 						reader.beginArray()
@@ -74,7 +95,7 @@ data class Action(
 			return validate(finishedAction)
 		}
 
-		fun validate(obj: Action): Action {
+		private fun validate(obj: Action): Action {
 			if (obj.name == "" && obj.href == "") {
 				throw KSirenException.ValidationException("Validation of action failed, href and name are empty.")
 			} else if (obj.name == "") {
@@ -85,15 +106,24 @@ data class Action(
 			return obj
 		}
 	}
+}
 
-	fun hasField(name: String): Boolean {
-		this.fields.forEach {
-			if (it.name == name) {
-				return true
-			}
-		}
-		return false
-	}
+internal data class MutableAction(
+	override val name: String,
+	override val classes: List<String> = listOf(),
+	override val fields: List<MutableField> = listOf(),
+	override val href: String,
+	override val method: String = "GET",
+	override val title: String?,
+	override val type: ContentType = ContentType.FORM) : ActionBase {
 
-	override fun toJson() = JsonUtils.toJson(this)
+	constructor(action: ActionBase) : this(
+		action.name,
+		action.classes,
+		action.fields.map { MutableField(it) },
+		action.href,
+		action.method,
+		action.title,
+		action.type
+	)
 }

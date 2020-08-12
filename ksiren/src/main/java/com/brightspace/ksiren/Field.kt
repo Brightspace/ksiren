@@ -15,11 +15,20 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+interface FieldBase : JsonSerializable {
+	val name: String
+	val classes: List<String>
+	val type: String
+	val value: String?
+
+	override fun toJson() = JsonUtils.toJson(this)
+}
+
 data class Field(
-	val name: String,
-	val classes: List<String> = listOf(),
-	val type: String = "text",
-	val value: String?) : JsonSerializable {
+	override val name: String,
+	override val classes: List<String> = listOf(),
+	override val type: String = "text",
+	override val value: String?) : FieldBase {
 
 	companion object {
 
@@ -33,7 +42,7 @@ data class Field(
 			while (reader.hasNext()) {
 				when (reader.nextName()) {
 					"name" -> {
-						conditionalRead(reader) {name = it}
+						conditionalRead(reader) { name = it }
 					}
 					"class" -> {
 						reader.beginArray()
@@ -66,6 +75,18 @@ data class Field(
 			return obj
 		}
 	}
+}
 
-	override fun toJson() = JsonUtils.toJson(this)
+internal data class MutableField(
+	override val name: String,
+	override var value: String?,
+	override val classes: List<String>,
+	override val type: String) : FieldBase {
+
+	constructor(field: FieldBase) : this(
+		field.name,
+		field.value,
+		field.classes,
+		field.type
+	)
 }

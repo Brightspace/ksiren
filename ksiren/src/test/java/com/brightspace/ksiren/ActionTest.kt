@@ -1,6 +1,8 @@
 package com.brightspace.ksiren
+
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
@@ -19,37 +21,38 @@ import kotlin.test.assertTrue
  * limitations under the License.
  */
 class ActionTest {
-    @Test
-    fun expectAction() {
-        val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing","fields": [{"name": "test","type": "number","value": "1"}]}"""
+	@Test
+	fun expectAction() {
+		val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing","fields": [{"name": "test","type": "number","value": "1"}]}"""
 
-        val action: Action = Action.fromJson(json.toKSirenJsonReader())
-        assertEquals("TestAction", action.name)
-        assertEquals("GET", action.method)
-        assertEquals("http://api.x.io/orders/42/items", action.href)
-        assertEquals("Test this thing", action.title)
-        assertEquals("Test this thing", action.title)
-        assertTrue(action.fields.isNotEmpty())
-    }
+		val action: Action = Action.fromJson(json.toKSirenJsonReader())
+		assertEquals("TestAction", action.name)
+		assertEquals("GET", action.method)
+		assertEquals("http://api.x.io/orders/42/items", action.href)
+		assertEquals("Test this thing", action.title)
+		assertEquals("Test this thing", action.title)
+		assertTrue(action.fields.isNotEmpty())
+	}
 
-    @Test
-    fun expectActionWithNoFields() {
-        val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing"}"""
+	@Test
+	fun expectActionWithNoFields() {
+		val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing"}"""
 
-        val action: Action = Action.fromJson(json.toKSirenJsonReader())
-        assertEquals("TestAction", action.name)
-        assertEquals("GET", action.method)
-        assertEquals("http://api.x.io/orders/42/items", action.href)
-        assertEquals("Test this thing", action.title)
-        assertEquals("Test this thing", action.title)
-    }
+		val action: Action = Action.fromJson(json.toKSirenJsonReader())
+		assertEquals("TestAction", action.name)
+		assertEquals("GET", action.method)
+		assertEquals("http://api.x.io/orders/42/items", action.href)
+		assertEquals("Test this thing", action.title)
+		assertEquals("Test this thing", action.title)
+	}
 
-    @Test
-    fun expectActionWithField() {
-        val json: String = """{ "name": "add-item", "title": "Add Item", "method": "GET", "href": "http://api.x.io/orders/42/items", "fields": [{ "name": "orderNumber", "type": "hidden", "value": "42" }, { "name": "productCode", "type": "text" }, { "name": "quantity", "type": "number" }] }"""
-        val action: Action = Action.fromJson(json.toKSirenJsonReader())
-        assertTrue(action.hasField("orderNumber"))
-        assertTrue(action.hasField("productCode"))
-        assertTrue(action.hasField("quantity"))
-    }
+	@Test
+	fun expectActionWithField() {
+		val json: String = """{ "name": "add-item", "title": "Add Item", "method": "GET", "href": "http://api.x.io/orders/42/items", "fields": [{ "name": "orderNumber", "type": "hidden", "value": "42" }, { "name": "productCode", "type": "text" }, { "name": "quantity", "type": "number" }] }"""
+		val action: Action = Action.fromJson(json.toKSirenJsonReader())
+		assertTrue(action.hasField("orderNumber"))
+		assertTrue(action.hasField("productCode"))
+		assertTrue(action.hasField("quantity"))
+		assertFalse(action.hasField("doesNotExist"))
+	}
 }

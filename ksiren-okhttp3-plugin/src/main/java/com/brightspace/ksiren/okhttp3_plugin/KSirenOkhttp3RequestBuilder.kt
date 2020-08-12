@@ -29,10 +29,8 @@ class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<R
 		if (action.fields.isNotEmpty()) {
 			when (action.method) {
 				"GET" -> {
-					fieldValues.forEach {
-						(name, value) ->
-
-						urlBuilder?.addQueryParameter(name, value)
+					action.fields.forEach {
+						urlBuilder?.addQueryParameter(it.name, it.value)
 					}
 					requestBuilder.get()
 				}
@@ -50,37 +48,15 @@ class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<R
 	private fun getBody(): RequestBody {
 		when (action.type) {
 			ContentType.JSON -> {
-				val mediaType = MediaType.parse(action.type.value)
-
-				val json = StringBuilder()
-				json.append("{")
-
-				var count = 0
-				fieldValues.forEach { (name, value) ->
-					if (count > 0) {
-						json.append(", ")
-					}
-
-					json.append("\"")
-					json.append(name)
-					json.append("\": \"")
-					json.append(value)
-					json.append("\"")
-
-					count += 1
-				}
-
-				json.append("}")
-				return RequestBody.create(mediaType, json.toString())
+				return RequestBody.create(MediaType.parse(action.type.value), action.toJsonRequestBody())
 			}
 
 			ContentType.FORM -> {
 				val requestBodyBuilder: MultipartBody.Builder = MultipartBody.Builder()
 					.setType(MultipartBody.FORM)
 
-				fieldValues.forEach {
-					(name, value) ->
-					requestBodyBuilder.addFormDataPart(name, value)
+				action.fields.forEach {
+					requestBodyBuilder.addFormDataPart(it.name, it.value)
 				}
 
 				return requestBodyBuilder.build()

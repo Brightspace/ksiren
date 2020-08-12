@@ -1,5 +1,7 @@
 package com.brightspace.ksiren
 
+import org.apache.commons.text.StringEscapeUtils
+
 /**
  * Copyright 2017 D2L Corporation
  *
@@ -34,7 +36,7 @@ internal object JsonUtils {
 			"href" to link.href.toJson()
 		).toJsonObject()
 
-	fun toJson(action: Action) = listOf(
+	fun toJson(action: ActionBase) = listOf(
 			"name" to action.name.toJson(),
 			"title" to action.title.toJson(),
 			"class" to action.classes.toJson(),
@@ -44,7 +46,7 @@ internal object JsonUtils {
 			"fields" to action.fields.toJson()
 		).toJsonObject()
 
-	fun toJson(field: Field) = listOf(
+	fun toJson(field: FieldBase) = listOf(
 			"name" to field.name.toJson(),
 			"class" to field.classes.toJson(),
 			"type" to field.type.toJson(),
@@ -58,7 +60,7 @@ internal object JsonUtils {
 		is ObjectValue -> propertyValue.objectProperties.toJson()
 	}
 
-	private fun String?.toJson() = if (this != null && isNotEmpty()) "\"$this\"" else null
+	private fun String?.toJson() = if (this != null && isNotEmpty()) "\"${escapeJson(this)}\"" else null
 
 	private fun List<String>.toJson() = toJsonArray { "\"$it\"" }
 
@@ -78,6 +80,10 @@ internal object JsonUtils {
 			mapNotNull { pair -> pair.second?.let { json -> pair.first to json } }
 				.joinToString(prefix = "{", postfix = "}") { "\"${it.first}\": ${it.second}" }
 		else null
+
+	fun escapeJson(raw: String): String {
+		return StringEscapeUtils.escapeJson(raw)
+	}
 }
 
 interface JsonSerializable {

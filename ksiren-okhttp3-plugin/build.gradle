@@ -2,7 +2,7 @@ def group = "com.brightspace.ksiren"
 def artifactName = "ksiren-okhttp3-plugin"
 def vcsUrlSetting = "https://github.com/Brightspace/ksiren/"
 def description = 'Adapter to enable KSiren to create Okhttp3 Requests out of Siren actions and fetch entities using an Okhttp3 client.'
-def versionValue = "1.1.0"
+def versionValue = "3.0.0"
 
 dependencies {
 	compile 'org.jetbrains.kotlin:kotlin-stdlib:1.3.31'
