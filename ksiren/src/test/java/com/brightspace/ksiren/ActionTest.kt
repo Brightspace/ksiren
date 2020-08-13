@@ -22,9 +22,13 @@ import kotlin.test.assertTrue
  * limitations under the License.
  */
 class ActionTest {
-	val stringRequiringJsonEscape = """"quoted text"	
-█s \ \/ \\ """
-	fun createJsonAction(fields: List<Field> = listOf()) =
+	/**
+	 * A string which has various characters requiring escaping as per https://tools.ietf.org/html/rfc7159#section-7
+	 * including: double-quotes, newline, tab, solidus, and several other control characters
+	 */
+	private val stringRequiringJsonEscape = """"quoted text"
+	█ \ / \/ \\ """
+	private fun createJsonAction(fields: List<Field> = listOf()) =
 		Action(
 			"test-action",
 			listOf(),
@@ -71,9 +75,7 @@ class ActionTest {
 
 	@Test
 	fun expectEscapedFieldString() {
-		val action = createJsonAction(
-			listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape))
-		)
+		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
 		val parsedAction = Action.fromJson(action.toJson().toString().toKSirenJsonReader())
 
 		assertEquals(stringRequiringJsonEscape, parsedAction.fields.find { it.name == "escapedString" }?.value)
@@ -81,9 +83,7 @@ class ActionTest {
 
 	@Test
 	fun expectSerializedRequestBody() {
-		val action = createJsonAction(
-			listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape))
-		)
+		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
 		val jsonRequestBody = action.toJsonRequestBody()
 		val expectedBody = """{"escapedString": "${StringEscapeUtils.escapeJson(stringRequiringJsonEscape)}"}"""
 
