@@ -28,8 +28,8 @@ interface ActionBase : JsonSerializable {
 	fun hasField(name: String): Boolean = this.fields.any() { it.name == name }
 
 	fun toJsonRequestBody(): String? =
-		if (fields?.isNotEmpty())
-			fields?.mapNotNull { field -> field.value?.let { json -> field.name to json } }
+		if (fields.isNotEmpty())
+			fields.mapNotNull { field -> field.value?.let { json -> field.name to json } }
 				.joinToString(prefix = "{", postfix = "}") { "\"${it.first}\": \"${JsonUtils.escapeJson(it.second)}\"" }
 		else null
 

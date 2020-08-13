@@ -81,9 +81,7 @@ internal object JsonUtils {
 				.joinToString(prefix = "{", postfix = "}") { "\"${it.first}\": ${it.second}" }
 		else null
 
-	fun escapeJson(raw: String): String {
-		return StringEscapeUtils.escapeJson(raw)
-	}
+	fun escapeJson(raw: String): String = StringEscapeUtils.escapeJson(raw)
 }
 
 interface JsonSerializable {

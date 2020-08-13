@@ -1,5 +1,6 @@
 package com.brightspace.ksiren
 
+import org.apache.commons.text.StringEscapeUtils
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -21,6 +22,18 @@ import kotlin.test.assertTrue
  * limitations under the License.
  */
 class ActionTest {
+	val stringRequiringJsonEscape = """"quoted text"	
+█s \ \/ \\ """
+	fun createJsonAction(fields: List<Field> = listOf()) =
+		Action(
+			"test-action",
+			listOf(),
+			"POST",
+			"https://foo.bar",
+			"action-siren-title",
+			ContentType.JSON,
+			fields)
+
 	@Test
 	fun expectAction() {
 		val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing","fields": [{"name": "test","type": "number","value": "1"}]}"""
@@ -54,5 +67,26 @@ class ActionTest {
 		assertTrue(action.hasField("productCode"))
 		assertTrue(action.hasField("quantity"))
 		assertFalse(action.hasField("doesNotExist"))
+	}
+
+	@Test
+	fun expectEscapedFieldString() {
+		val action = createJsonAction(
+			listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape))
+		)
+		val parsedAction = Action.fromJson(action.toJson().toString().toKSirenJsonReader())
+
+		assertEquals(stringRequiringJsonEscape, parsedAction.fields.find { it.name == "escapedString" }?.value)
+	}
+
+	@Test
+	fun expectSerializedRequestBody() {
+		val action = createJsonAction(
+			listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape))
+		)
+		val jsonRequestBody = action.toJsonRequestBody()
+		val expectedBody = """{"escapedString": "${StringEscapeUtils.escapeJson(stringRequiringJsonEscape)}"}"""
+
+		assertEquals(expectedBody, jsonRequestBody)
 	}
 }
