@@ -77,16 +77,6 @@ data class Field(
 	}
 }
 
-internal data class MutableField(
-	override val name: String,
-	override var value: String?,
-	override val classes: List<String>,
-	override val type: String) : FieldBase {
-
-	constructor(field: FieldBase) : this(
-		field.name,
-		field.value,
-		field.classes,
-		field.type
-	)
+internal class MutableField(private val field: FieldBase) : FieldBase by field {
+	override var value: String? = field.value
 }

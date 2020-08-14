@@ -109,22 +109,6 @@ data class Action(
 	}
 }
 
-internal data class MutableAction(
-	override val name: String,
-	override val classes: List<String> = listOf(),
-	override val fields: List<MutableField> = listOf(),
-	override val href: String,
-	override val method: String = "GET",
-	override val title: String?,
-	override val type: ContentType = ContentType.FORM) : ActionBase {
-
-	constructor(action: ActionBase) : this(
-		action.name,
-		action.classes,
-		action.fields.map { field -> MutableField(field) },
-		action.href,
-		action.method,
-		action.title,
-		action.type
-	)
+internal class MutableAction(private val action: ActionBase) : ActionBase by action {
+	override val fields: List<MutableField> = action.fields.map { field -> MutableField(field) }
 }
