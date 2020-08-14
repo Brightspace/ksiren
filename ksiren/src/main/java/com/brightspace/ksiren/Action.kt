@@ -25,13 +25,14 @@ interface ActionBase : JsonSerializable {
 	val type: ContentType
 	val fields: List<FieldBase>
 
-	fun hasField(name: String): Boolean = this.fields.any() { it.name == name }
+	fun hasField(name: String): Boolean = this.fields.any() { field -> field.name == name }
 
-	fun toJsonRequestBody(): String? =
-		if (fields.isNotEmpty())
+	fun toJsonRequestBody(): String? {
+		return if (fields.isNotEmpty())
 			fields.mapNotNull { field -> field.value?.let { json -> field.name to json } }
 				.joinToString(prefix = "{", postfix = "}") { "\"${it.first}\": \"${JsonUtils.escapeJson(it.second)}\"" }
 		else null
+	}
 
 	override fun toJson() = JsonUtils.toJson(this)
 }
@@ -120,7 +121,7 @@ internal data class MutableAction(
 	constructor(action: ActionBase) : this(
 		action.name,
 		action.classes,
-		action.fields.map { MutableField(it) },
+		action.fields.map { field -> MutableField(field) },
 		action.href,
 		action.method,
 		action.title,
