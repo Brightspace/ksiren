@@ -47,7 +47,6 @@ class ActionTest {
 		assertEquals("GET", action.method)
 		assertEquals("http://api.x.io/orders/42/items", action.href)
 		assertEquals("Test this thing", action.title)
-		assertEquals("Test this thing", action.title)
 		assertTrue(action.fields.isNotEmpty())
 	}
 

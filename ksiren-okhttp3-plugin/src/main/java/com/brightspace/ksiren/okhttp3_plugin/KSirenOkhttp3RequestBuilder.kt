@@ -20,17 +20,18 @@ import okhttp3.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<Request>(wrappedAction) {
+class KSirenOkhttp3RequestBuilder(wrappedAction: Action) : KSirenRequestBuilder<Request>(wrappedAction) {
 
 	override fun build(): Request {
 		val requestBuilder: Request.Builder = Request.Builder()
-		val urlBuilder: HttpUrl.Builder? = HttpUrl.parse(action.href)?.newBuilder()
+		val urlBuilder: HttpUrl.Builder = HttpUrl.parse(action.href)?.newBuilder()
+			?: throw Exception("Action href could not be parsed")
 
 		if (action.fields.isNotEmpty()) {
 			when (action.method) {
 				"GET" -> {
 					action.fields.forEach {
-						urlBuilder?.addQueryParameter(it.name, it.value)
+						urlBuilder.addQueryParameter(it.name, it.value)
 					}
 					requestBuilder.get()
 				}
@@ -40,7 +41,7 @@ class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<R
 			}
 		}
 
-		requestBuilder.url(urlBuilder?.build())
+		requestBuilder.url(urlBuilder.build())
 
 		return requestBuilder.build()
 	}
@@ -55,9 +56,9 @@ class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<R
 				val requestBodyBuilder: MultipartBody.Builder = MultipartBody.Builder()
 					.setType(MultipartBody.FORM)
 
-				action.fields.forEach {
-					requestBodyBuilder.addFormDataPart(it.name, it.value)
-				}
+				action.fields
+					.mapNotNull { field -> field.value?.let { value -> field.name to value } }
+					.forEach() { pair -> requestBodyBuilder.addFormDataPart(pair.first, pair.second) }
 
 				return requestBodyBuilder.build()
 			}
