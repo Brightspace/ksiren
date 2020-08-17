@@ -1,9 +1,4 @@
-package com.brightspace.ksiren.gson_adapter
-
-import com.brightspace.ksiren.KSirenJsonReader
-import com.brightspace.ksiren.KSirenJsonReaderFactory
-import com.google.gson.stream.JsonReader
-import java.io.StringReader
+package com.brightspace.ksiren
 
 /**
  * Copyright 2017 D2L Corporation
@@ -20,8 +15,21 @@ import java.io.StringReader
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenGsonReaderFactory: KSirenJsonReaderFactory {
-	override fun getKSirenJsonReader(string: String): KSirenJsonReader {
-		return KSirenGsonReader(JsonReader(StringReader(string)))
-	}
+interface KSirenJsonWriter {
+	val getSerializedString: () -> String
+
+	fun beginObject(): KSirenJsonWriter
+	fun endObject(): KSirenJsonWriter
+
+	fun beginArray(): KSirenJsonWriter
+	fun endArray(): KSirenJsonWriter
+
+	fun close()
+
+	fun name(value: String): KSirenJsonWriter
+
+	fun value(value: String?): KSirenJsonWriter
+	fun value(value: Number?): KSirenJsonWriter
+	fun value(value: Double?): KSirenJsonWriter
+	fun value(value: Boolean?): KSirenJsonWriter
 }

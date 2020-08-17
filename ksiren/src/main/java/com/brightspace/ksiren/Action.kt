@@ -16,35 +16,14 @@ package com.brightspace.ksiren
  * limitations under the License.
  */
 
-interface ActionBase : JsonSerializable {
-	val name: String
-	val classes: List<String>
-	val method: String
-	val href: String
-	val title: String?
-	val type: ContentType
-	val fields: List<FieldBase>
-
-	fun hasField(name: String): Boolean = this.fields.any() { field -> field.name == name }
-
-	fun toJsonRequestBody(): String {
-		return if (fields.isNotEmpty())
-			fields.mapNotNull { field -> field.value?.let { json -> field.name to json } }
-				.joinToString(prefix = "{", postfix = "}") { "\"${it.first}\": \"${JsonUtils.escapeJson(it.second)}\"" }
-		else "{}"
-	}
-
-	override fun toJson() = JsonUtils.toJson(this)
-}
-
 data class Action(
-	override val name: String,
-	override val classes: List<String> = listOf(),
-	override val method: String = "GET",
-	override val href: String,
-	override val title: String?,
-	override val type: ContentType = ContentType.FORM,
-	override val fields: List<Field> = listOf()) : ActionBase {
+	val name: String,
+	val classes: List<String> = listOf(),
+	val method: String = "GET",
+	val href: String,
+	val title: String?,
+	val type: ContentType = ContentType.FORM,
+	val fields: List<Field> = listOf()) : JsonSerializable {
 
 	companion object {
 
@@ -107,8 +86,34 @@ data class Action(
 			return obj
 		}
 	}
-}
 
-internal class MutableAction(private val action: ActionBase) : ActionBase by action {
-	override val fields: List<MutableField> = action.fields.map { field -> MutableField(field) }
+	fun deepCopy(): Action {
+		return Action(
+			name,
+			classes,
+			method,
+			href,
+			title,
+			type,
+			fields.map() { field -> field.copy() }
+		)
+	}
+
+	fun hasField(name: String): Boolean = this.fields.any() { field -> field.name == name }
+
+	override fun toJson(writer: KSirenJsonWriter): String = JsonUtils.toJson(this, writer)
+
+	fun toJsonRequestBody(writer: KSirenJsonWriter): String {
+		writer.beginObject()
+
+		fields?.forEach() { field ->
+			writer.name(field.name)
+			writer.value(field.value)
+		}
+
+		writer.endObject()
+		writer.close()
+
+		return writer.getSerializedString()
+	}
 }

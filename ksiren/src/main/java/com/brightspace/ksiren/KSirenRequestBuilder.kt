@@ -15,14 +15,11 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class KSirenRequestBuilder<T>(action: ActionBase) {
-	private val mutableAction = MutableAction(action)
-
-	val action: ActionBase
-		get() = mutableAction
+abstract class KSirenRequestBuilder<T>(referenceAction: Action) {
+	protected val action = referenceAction.deepCopy()
 
 	fun addFieldValue(name: String, value: String): KSirenRequestBuilder<T> {
-		mutableAction.fields.find { it.name == name }?.value = value
+		action.fields.find { it.name == name }?.value = value
 		return this
 	}
 

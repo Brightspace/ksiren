@@ -20,7 +20,7 @@ data class Link(
 	val classes: List<String> = listOf(),
 	val href: String,
 	val title: String?,
-	val type: String?) : JsonSerializable {
+	val type: String?) {
 
 	companion object {
 
@@ -84,6 +84,4 @@ data class Link(
 	fun hasClass(vararg clazz: String): Boolean {
 		return classes.containsAll(clazz.toList())
 	}
-
-	override fun toJson() = JsonUtils.toJson(this)
 }

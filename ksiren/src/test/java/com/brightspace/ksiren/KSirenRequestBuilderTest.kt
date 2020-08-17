@@ -1,5 +1,7 @@
 package com.brightspace.ksiren
 
+import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriter
+import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriterFactory
 import com.brightspace.ksiren.okhttp3_request_builder.KSirenOkhttp3RequestBuilder
 import okhttp3.Request
 import org.junit.Test
@@ -38,8 +40,9 @@ class KSirenRequestBuilderTest {
 
 	@Test
 	fun testGetBuilder() {
+		val writer = KSirenMoshiWriterFactory().create()
 		val action: Action = returnAction("GET", ContentType.FORM)
-		val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(action)
+		val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(action, writer)
 		requestBuilder.addFieldValue("testParam", "testValue")
 		assertEquals("http://www.example.com/?testParam=testValue", requestBuilder.build().url().toString())
 	}
@@ -51,7 +54,8 @@ class KSirenRequestBuilderTest {
 	).map { contentType ->
 			DynamicTest.dynamicTest("when Content-Type is $contentType") {
 				val action = returnAction("POST", contentType)
-				val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(action)
+				val writer = KSirenMoshiWriterFactory().create()
+				val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(action, writer)
 				requestBuilder.addFieldValue("testParam", "testValue")
 				requestBuilder.build()
 

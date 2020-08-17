@@ -1,6 +1,6 @@
 package com.brightspace.ksiren
 
-import org.apache.commons.text.StringEscapeUtils
+import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriterFactory
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -74,17 +74,20 @@ class ActionTest {
 
 	@Test
 	fun expectEscapedFieldString() {
+		val writer = KSirenMoshiWriterFactory().create()
 		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
-		val parsedAction = Action.fromJson(action.toJson().toString().toKSirenJsonReader())
+		val actionJson = action.toJson(writer)
+		val parsedAction = Action.fromJson(actionJson.toKSirenJsonReader())
 
 		assertEquals(stringRequiringJsonEscape, parsedAction.fields.find { it.name == "escapedString" }?.value)
 	}
 
 	@Test
 	fun expectSerializedRequestBody() {
+		val writer = KSirenMoshiWriterFactory().create()
 		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
-		val jsonRequestBody = action.toJsonRequestBody()
-		val expectedBody = """{"escapedString": "${StringEscapeUtils.escapeJson(stringRequiringJsonEscape)}"}"""
+		val jsonRequestBody = action.toJsonRequestBody(writer)
+		val expectedBody = """{"escapedString":"\"quoted text\"\n\t█\b\f \\ / \\/ \\\\ "}"""
 
 		assertEquals(expectedBody, jsonRequestBody)
 	}

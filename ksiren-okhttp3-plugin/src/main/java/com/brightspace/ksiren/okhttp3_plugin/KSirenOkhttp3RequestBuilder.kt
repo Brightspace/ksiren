@@ -2,6 +2,7 @@ package com.brightspace.ksiren.okhttp3_request_builder
 
 import com.brightspace.ksiren.Action
 import com.brightspace.ksiren.ContentType
+import com.brightspace.ksiren.KSirenJsonWriter
 import com.brightspace.ksiren.KSirenRequestBuilder
 import okhttp3.*
 
@@ -20,8 +21,7 @@ import okhttp3.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenOkhttp3RequestBuilder(wrappedAction: Action) : KSirenRequestBuilder<Request>(wrappedAction) {
-
+class KSirenOkhttp3RequestBuilder(wrappedAction: Action, private val writer: KSirenJsonWriter) : KSirenRequestBuilder<Request>(wrappedAction) {
 	override fun build(): Request {
 		val requestBuilder: Request.Builder = Request.Builder()
 		val urlBuilder: HttpUrl.Builder = HttpUrl.parse(action.href)?.newBuilder()
@@ -49,7 +49,10 @@ class KSirenOkhttp3RequestBuilder(wrappedAction: Action) : KSirenRequestBuilder<
 	private fun getBody(): RequestBody {
 		when (action.type) {
 			ContentType.JSON -> {
-				return RequestBody.create(MediaType.parse(action.type.value), action.toJsonRequestBody())
+				val mediaType = MediaType.parse(action.type.value)
+				val jsonBody = action.toJsonRequestBody(writer)
+
+				return RequestBody.create(mediaType, jsonBody)
 			}
 
 			ContentType.FORM -> {

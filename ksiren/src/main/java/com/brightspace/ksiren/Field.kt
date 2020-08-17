@@ -15,20 +15,11 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-interface FieldBase : JsonSerializable {
-	val name: String
-	val classes: List<String>
-	val type: String
-	val value: String?
-
-	override fun toJson() = JsonUtils.toJson(this)
-}
-
 data class Field(
-	override val name: String,
-	override val classes: List<String> = listOf(),
-	override val type: String = "text",
-	override val value: String?) : FieldBase {
+	val name: String,
+	val classes: List<String> = listOf(),
+	val type: String = "text",
+	var value: String?) {
 
 	companion object {
 
@@ -68,15 +59,11 @@ data class Field(
 			return validate(finishedField)
 		}
 
-		fun validate(obj: Field): Field {
+		private fun validate(obj: Field): Field {
 			if (obj.name == "") {
 				throw KSirenException.ValidationException("Field parsing failed, missing name value.")
 			}
 			return obj
 		}
 	}
-}
-
-internal class MutableField(private val field: FieldBase) : FieldBase by field {
-	override var value: String? = field.value
 }

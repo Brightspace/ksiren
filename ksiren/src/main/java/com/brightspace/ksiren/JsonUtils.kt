@@ -1,6 +1,6 @@
 package com.brightspace.ksiren
 
-import org.apache.commons.text.StringEscapeUtils
+import java.lang.Exception
 
 /**
  * Copyright 2017 D2L Corporation
@@ -18,72 +18,197 @@ import org.apache.commons.text.StringEscapeUtils
  * limitations under the License.
  */
 internal object JsonUtils {
-	fun toJson(entity: Entity) = listOf(
-			"class" to entity.classes.toJson(),
-			"rel" to entity.rel.toJson(),
-			"properties" to entity.enhancedProperties.toJson(),
-			"entities" to entity.entities.toJson(),
-			"actions" to entity.actions.values.toJson(),
-			"links" to entity.links.toJson()
-		)
-		.toJsonObject()
+	fun toJson(entity: Entity, writer: KSirenJsonWriter): String {
+		writeEntity(entity, writer)
+		writer.close()
 
-	fun toJson(link: Link) = listOf(
-			"rel" to link.rels.toJson(),
-			"class" to link.classes.toJson(),
-			"title" to link.title.toJson(),
-			"type" to link.type.toJson(),
-			"href" to link.href.toJson()
-		).toJsonObject()
-
-	fun toJson(action: ActionBase) = listOf(
-			"name" to action.name.toJson(),
-			"title" to action.title.toJson(),
-			"class" to action.classes.toJson(),
-			"method" to action.method.toJson(),
-			"href" to action.href.toJson(),
-			"type" to action.type.value.toJson(),
-			"fields" to action.fields.toJson()
-		).toJsonObject()
-
-	fun toJson(field: FieldBase) = listOf(
-			"name" to field.name.toJson(),
-			"class" to field.classes.toJson(),
-			"type" to field.type.toJson(),
-			"value" to field.value.toJson()
-		).toJsonObject()
-
-	fun toJson(propertyValue: PropertyValue): String? = when(propertyValue) {
-		is StringValue -> propertyValue.stringValue.toJson()
-		is BooleanValue -> propertyValue.booleanValue.toString()
-		is ArrayValue -> propertyValue.arrayElements.toJson()
-		is ObjectValue -> propertyValue.objectProperties.toJson()
+		return writer.getSerializedString()
 	}
 
-	private fun String?.toJson() = if (this != null && isNotEmpty()) "\"${escapeJson(this)}\"" else null
+	fun toJson(action: Action, writer: KSirenJsonWriter): String {
+		writeAction(action, writer)
+		writer.close()
 
-	private fun List<String>.toJson() = toJsonArray { "\"$it\"" }
+		return writer.getSerializedString()
+	}
 
-	private fun Collection<JsonSerializable>.toJson() = mapNotNull { it.toJson() }.toJsonArray()
+	private fun writeProperties(properties: Map<String, PropertyValue>, writer: KSirenJsonWriter) {
+		writer.beginObject()
+		properties.forEach() { (name, value) ->
+			writer.name(name)
+			writePropertyValue(value, writer)
+		}
+		writer.endObject()
+	}
 
-	private fun List<String>.toJsonArray(transform: (String) -> String = { it })
-		= if (isNotEmpty()) joinToString(prefix = "[", postfix = "]", transform = transform) else null
+	private fun writePropertyValue(value: PropertyValue, writer: KSirenJsonWriter) {
+		when (value) {
+			is StringValue -> writer.value(value.stringValue)
+			is BooleanValue -> writer.value(value.booleanValue)
+			is ArrayValue -> {
+				writer.beginArray()
+				value.arrayElements.forEach() { el -> writePropertyValue(el, writer) }
+				writer.endArray()
+			}
+			is ObjectValue -> writeProperties(value.objectProperties, writer)
+		}
+	}
 
-	private fun Map<String, PropertyValue>.toJson(): String? =
-		mapValues { entry -> entry.value.toJson() }
-			.entries
-			.map { entry -> entry.toPair() }
-			.toJsonObject()
+	private fun writeEntity(entity: Entity, writer: KSirenJsonWriter) {
+		writer.beginObject()
 
-	private fun List<Pair<String, String?>>.toJsonObject() =
-		if (isNotEmpty())
-			mapNotNull { pair -> pair.second?.let { json -> pair.first to json } }
-				.joinToString(prefix = "{", postfix = "}") { "\"${it.first}\": ${it.second}" }
-		else null
+		entity.classes?.let { classes ->
+			if (classes.isNotEmpty()) {
+				writer.name("class")
+				writeStringArray(classes, writer)
+			}
+		}
 
-	fun escapeJson(raw: String): String = StringEscapeUtils.escapeJson(raw)
+		entity.rel?.let { rels ->
+			if (rels.isNotEmpty()) {
+				writer.name("rel")
+				writeStringArray(rels, writer)
+			}
+		}
+
+		entity.href?.let {
+			writer.name("href")
+				.value(entity.href)
+		}
+
+		entity.enhancedProperties?.let {
+			writer.name("properties")
+			writeProperties(entity.enhancedProperties, writer)
+		}
+
+		entity.entities?.let { subEntities ->
+			if (subEntities.isNotEmpty()) {
+				writer.name("entities")
+				writer.beginArray()
+				subEntities.forEach() { entity -> writeEntity(entity, writer) }
+				writer.endArray()
+			}
+		}
+
+		entity.actions?.let { actions ->
+			if (actions.isNotEmpty()) {
+				writer.name("actions")
+				writer.beginArray()
+				actions.forEach() { (_, action) ->	writeAction(action, writer)	}
+				writer.endArray()
+			}
+		}
+
+		entity.links?.let { links ->
+			if (links.isNotEmpty()) {
+				writer.name("links")
+				writeLinks(entity.links, writer)
+			}
+		}
+
+		writer.endObject()
+	}
+
+	private fun writeLinks(links: Collection<Link>, writer: KSirenJsonWriter) {
+		writer.beginArray()
+
+		links.forEach() { link ->
+			if (link.href == null) throw Exception("link must have href")
+			if (link.rels.isEmpty()) throw Exception("link must have at least one rel")
+
+			writer.beginObject()
+
+			link.title?.let { title ->
+				writer.name("title")
+					.value(title)
+			}
+
+			link.classes?.let { classes ->
+				writer.name("class")
+				writeStringArray(classes, writer)
+			}
+
+			writer.name("rel")
+			writeStringArray(link.rels, writer)
+
+			writer.name("href")
+				.value(link.href)
+
+			writer.name("type")
+				.value(link.type)
+
+			writer.endObject()
+		}
+
+		writer.endArray()
+	}
+
+	private fun writeAction(action: Action, writer: KSirenJsonWriter) {
+		writer.beginObject()
+
+		writer.name("name")
+			.value(action.name)
+
+		action.classes?.let { classes ->
+			writer.name("class")
+			writeStringArray(classes, writer)
+		}
+
+		action.title?.let { title ->
+			writer.name("title")
+				.value(title)
+		}
+
+		writer.name("type")
+			.value(action.type.value)
+
+		writer.name("href")
+			.value(action.href)
+
+		writer.name("method")
+			.value(action.method)
+
+		action.fields?.let { fields ->
+			if (fields.isEmpty())
+				return
+
+			writer.name("fields")
+
+			writer.beginArray()
+			fields.mapNotNull { field ->
+				writer.beginObject()
+
+				writer.name("name")
+				writer.value(field.name)
+
+				field.classes?.let { classes ->
+					writer.name("class")
+					writeStringArray(classes, writer)
+				}
+
+				writer.name("type")
+				writer.value(field.type)
+
+				field.value?.let {
+					writer.name("value")
+					writer.value(field.value)
+				}
+
+				writer.endObject()
+			}
+			writer.endArray()
+		}
+
+		writer.endObject()
+	}
+
+	private fun writeStringArray(values: List<String>, writer: KSirenJsonWriter) {
+		writer.beginArray()
+		values.forEach() { value -> writer.value(value) }
+		writer.endArray()
+	}
 }
 
 interface JsonSerializable {
-	fun toJson(): String?
+	fun toJson(writer: KSirenJsonWriter): String
 }

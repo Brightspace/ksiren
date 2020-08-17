@@ -1,6 +1,6 @@
 package com.brightspace.ksiren
 
-import com.brightspace.ksiren.moshi_adapter.KSirenMoshiAdapter
+import com.brightspace.ksiren.moshi_adapter.KSirenMoshiReader
 import com.squareup.moshi.JsonReader
 import okio.Okio
 import java.io.ByteArrayInputStream
@@ -21,7 +21,7 @@ import java.io.ByteArrayInputStream
  * limitations under the License.
  */
 fun String.toKSirenJsonReader(): KSirenJsonReader {
-	return KSirenMoshiAdapter(
+	return KSirenMoshiReader(
 		JsonReader.of(
 			Okio.buffer(
 				Okio.source(

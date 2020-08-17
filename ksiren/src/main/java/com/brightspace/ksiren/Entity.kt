@@ -58,7 +58,7 @@ data class Entity internal constructor(
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader) {classes.add(it)}
+							conditionalRead(reader) { classes.add(it) }
 						}
 						reader.endArray()
 					}
@@ -103,7 +103,7 @@ data class Entity internal constructor(
 					"rel" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {rel.add(it)})
+							conditionalRead(reader, { rel.add(it) })
 						}
 						reader.endArray()
 					}
@@ -158,5 +158,5 @@ data class Entity internal constructor(
 		}
 	}
 
-	override fun toJson() = JsonUtils.toJson(this)
+	override fun toJson(writer: KSirenJsonWriter) = JsonUtils.toJson(this, writer)
 }
