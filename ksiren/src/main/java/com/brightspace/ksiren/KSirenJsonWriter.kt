@@ -26,7 +26,7 @@ interface KSirenJsonWriter {
 
 	fun close()
 
-	fun name(value: String): KSirenJsonWriter
+	fun name(name: String): KSirenJsonWriter
 
 	fun value(value: String?): KSirenJsonWriter
 	fun value(value: Number?): KSirenJsonWriter

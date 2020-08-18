@@ -57,18 +57,14 @@ internal object JsonUtils {
 	private fun writeEntity(entity: Entity, writer: KSirenJsonWriter) {
 		writer.beginObject()
 
-		entity.classes?.let { classes ->
-			if (classes.isNotEmpty()) {
-				writer.name("class")
-				writeStringArray(classes, writer)
-			}
+		if (entity.classes.isNotEmpty()) {
+			writer.name("class")
+			writeStringArray(entity.classes, writer)
 		}
 
-		entity.rel?.let { rels ->
-			if (rels.isNotEmpty()) {
-				writer.name("rel")
-				writeStringArray(rels, writer)
-			}
+		if (entity.rel.isNotEmpty()) {
+			writer.name("rel")
+			writeStringArray(entity.rel, writer)
 		}
 
 		entity.href?.let {
@@ -76,34 +72,28 @@ internal object JsonUtils {
 				.value(entity.href)
 		}
 
-		entity.enhancedProperties?.let {
+		entity.enhancedProperties.let {
 			writer.name("properties")
 			writeProperties(entity.enhancedProperties, writer)
 		}
 
-		entity.entities?.let { subEntities ->
-			if (subEntities.isNotEmpty()) {
-				writer.name("entities")
-				writer.beginArray()
-				subEntities.forEach() { entity -> writeEntity(entity, writer) }
-				writer.endArray()
-			}
+		if (entity.entities.isNotEmpty()) {
+			writer.name("entities")
+			writer.beginArray()
+			entity.entities.forEach() { subEntity -> writeEntity(subEntity, writer) }
+			writer.endArray()
 		}
 
-		entity.actions?.let { actions ->
-			if (actions.isNotEmpty()) {
-				writer.name("actions")
-				writer.beginArray()
-				actions.forEach() { (_, action) ->	writeAction(action, writer)	}
-				writer.endArray()
-			}
+		if (entity.actions.isNotEmpty()) {
+			writer.name("actions")
+			writer.beginArray()
+			entity.actions.forEach() { (_, action) ->	writeAction(action, writer)	}
+			writer.endArray()
 		}
 
-		entity.links?.let { links ->
-			if (links.isNotEmpty()) {
-				writer.name("links")
-				writeLinks(entity.links, writer)
-			}
+		if (entity.links.isNotEmpty()) {
+			writer.name("links")
+			writeLinks(entity.links, writer)
 		}
 
 		writer.endObject()
@@ -113,7 +103,6 @@ internal object JsonUtils {
 		writer.beginArray()
 
 		links.forEach() { link ->
-			if (link.href == null) throw Exception("link must have href")
 			if (link.rels.isEmpty()) throw Exception("link must have at least one rel")
 
 			writer.beginObject()
@@ -123,9 +112,9 @@ internal object JsonUtils {
 					.value(title)
 			}
 
-			link.classes?.let { classes ->
+			if (link.classes.isNotEmpty()) {
 				writer.name("class")
-				writeStringArray(classes, writer)
+				writeStringArray(link.classes, writer)
 			}
 
 			writer.name("rel")
@@ -149,9 +138,9 @@ internal object JsonUtils {
 		writer.name("name")
 			.value(action.name)
 
-		action.classes?.let { classes ->
+		if (action.classes.isNotEmpty()) {
 			writer.name("class")
-			writeStringArray(classes, writer)
+			writeStringArray(action.classes, writer)
 		}
 
 		action.title?.let { title ->
@@ -168,22 +157,22 @@ internal object JsonUtils {
 		writer.name("method")
 			.value(action.method)
 
-		action.fields?.let { fields ->
-			if (fields.isEmpty())
+		if (action.fields.isNotEmpty()) {
+			if (action.fields.isEmpty())
 				return
 
 			writer.name("fields")
 
 			writer.beginArray()
-			fields.mapNotNull { field ->
+			action.fields.mapNotNull { field ->
 				writer.beginObject()
 
 				writer.name("name")
 				writer.value(field.name)
 
-				field.classes?.let { classes ->
+				if (field.classes.isNotEmpty()) {
 					writer.name("class")
-					writeStringArray(classes, writer)
+					writeStringArray(field.classes, writer)
 				}
 
 				writer.name("type")

@@ -43,4 +43,10 @@ subprojects {
 		classifier = 'javadoc'
 		from "$buildDir/javadoc"
 	}
+
+	compileKotlin {
+		kotlinOptions {
+			allWarningsAsErrors = true
+		}
+	}
 }

@@ -106,7 +106,7 @@ data class Action(
 	fun toJsonRequestBody(writer: KSirenJsonWriter): String {
 		writer.beginObject()
 
-		fields?.forEach() { field ->
+		fields.forEach() { field ->
 			writer.name(field.name)
 			writer.value(field.value)
 		}
