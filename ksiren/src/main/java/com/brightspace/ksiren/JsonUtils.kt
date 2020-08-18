@@ -72,7 +72,7 @@ internal object JsonUtils {
 				.value(entity.href)
 		}
 
-		entity.enhancedProperties.let {
+		if (entity.enhancedProperties.isNotEmpty()) {
 			writer.name("properties")
 			writeProperties(entity.enhancedProperties, writer)
 		}
@@ -87,7 +87,7 @@ internal object JsonUtils {
 		if (entity.actions.isNotEmpty()) {
 			writer.name("actions")
 			writer.beginArray()
-			entity.actions.forEach() { (_, action) ->	writeAction(action, writer)	}
+			entity.actions.forEach() { (_, action) -> writeAction(action, writer) }
 			writer.endArray()
 		}
 
@@ -168,7 +168,7 @@ internal object JsonUtils {
 				writer.beginObject()
 
 				writer.name("name")
-				writer.value(field.name)
+					.value(field.name)
 
 				if (field.classes.isNotEmpty()) {
 					writer.name("class")
@@ -176,11 +176,11 @@ internal object JsonUtils {
 				}
 
 				writer.name("type")
-				writer.value(field.type)
+					.value(field.type)
 
-				field.value?.let {
+				field.value?.let { value ->
 					writer.name("value")
-					writer.value(field.value)
+						.value(value)
 				}
 
 				writer.endObject()
