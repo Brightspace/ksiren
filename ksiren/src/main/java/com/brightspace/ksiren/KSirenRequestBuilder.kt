@@ -19,7 +19,7 @@ abstract class KSirenRequestBuilder<T>(referenceAction: Action) {
 	protected val action = referenceAction.deepCopy()
 
 	fun addFieldValue(name: String, value: String): KSirenRequestBuilder<T> {
-		action.fields.find { it.name == name }?.value = value
+		action.fields.find { field -> field.name == name }?.value = value
 		return this
 	}
 
