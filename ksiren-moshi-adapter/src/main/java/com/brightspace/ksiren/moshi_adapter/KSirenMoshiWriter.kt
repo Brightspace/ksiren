@@ -11,22 +11,22 @@ class KSirenMoshiWriter(
 		writer.serializeNulls = false
 	}
 
-	override fun beginObject() : KSirenJsonWriter{
+	override fun beginObject(): KSirenJsonWriter {
 		writer.beginObject()
 		return this
 	}
 
-	override fun endObject() : KSirenJsonWriter{
+	override fun endObject(): KSirenJsonWriter {
 		writer.endObject()
 		return this
 	}
 
-	override fun beginArray() : KSirenJsonWriter {
+	override fun beginArray(): KSirenJsonWriter {
 		writer.beginArray()
 		return this
 	}
 
-	override fun endArray() : KSirenJsonWriter {
+	override fun endArray(): KSirenJsonWriter {
 		writer.endArray()
 		return this
 	}
@@ -35,27 +35,27 @@ class KSirenMoshiWriter(
 		writer.close()
 	}
 
-	override fun name(name: String) : KSirenJsonWriter {
+	override fun name(name: String): KSirenJsonWriter {
 		writer.name(name)
 		return this
 	}
 
-	override fun value(value: String?) : KSirenJsonWriter{
+	override fun value(value: String?): KSirenJsonWriter {
 		writer.value(value)
 		return this
 	}
 
-	override fun value(value: Number?) : KSirenJsonWriter{
+	override fun value(value: Number?): KSirenJsonWriter {
 		writer.value(value)
 		return this
 	}
 
-	override fun value(value: Double?) : KSirenJsonWriter{
+	override fun value(value: Double?): KSirenJsonWriter {
 		writer.value(value)
 		return this
 	}
 
-	override fun value(value: Boolean?) : KSirenJsonWriter{
+	override fun value(value: Boolean?): KSirenJsonWriter {
 		writer.value(value)
 		return this
 	}
