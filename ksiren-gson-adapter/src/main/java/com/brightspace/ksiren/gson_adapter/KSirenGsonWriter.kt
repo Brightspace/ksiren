@@ -2,61 +2,30 @@ package com.brightspace.ksiren.gson_adapter
 
 import com.brightspace.ksiren.KSirenJsonWriter
 import com.google.gson.stream.JsonWriter
+import java.io.Closeable
 
 class KSirenGsonWriter(
-	private val writer: JsonWriter,
-	override val getSerializedString: () -> String) : KSirenJsonWriter {
+	private val gsonWriter: JsonWriter,
+	override val getSerializedString: () -> String) : KSirenJsonWriter, Closeable {
 
 	init {
-		writer.serializeNulls = false
+		gsonWriter.serializeNulls = false
 	}
 
-	override fun beginObject(): KSirenJsonWriter {
-		writer.beginObject()
-		return this
-	}
+	override fun beginObject(): KSirenJsonWriter = apply { gsonWriter.beginObject() }
+	override fun endObject(): KSirenJsonWriter = apply { gsonWriter.endObject() }
 
-	override fun endObject(): KSirenJsonWriter {
-		writer.endObject()
-		return this
-	}
-
-	override fun beginArray(): KSirenJsonWriter {
-		writer.beginArray()
-		return this
-	}
-
-	override fun endArray(): KSirenJsonWriter {
-		writer.endArray()
-		return this
-	}
+	override fun beginArray(): KSirenJsonWriter = apply { gsonWriter.beginArray() }
+	override fun endArray(): KSirenJsonWriter = apply { gsonWriter.endArray() }
 
 	override fun close() {
-		writer.close()
+		gsonWriter.close()
 	}
 
-	override fun name(name: String): KSirenJsonWriter {
-		writer.name(name)
-		return this
-	}
+	override fun name(name: String): KSirenJsonWriter = apply { gsonWriter.name(name) }
 
-	override fun value(value: String?): KSirenJsonWriter {
-		writer.value(value)
-		return this
-	}
-
-	override fun value(value: Number?): KSirenJsonWriter {
-		writer.value(value)
-		return this
-	}
-
-	override fun value(value: Double?): KSirenJsonWriter {
-		writer.value(value)
-		return this
-	}
-
-	override fun value(value: Boolean?): KSirenJsonWriter {
-		writer.value(value)
-		return this
-	}
+	override fun value(value: String?): KSirenJsonWriter = apply { gsonWriter.value(value) }
+	override fun value(value: Number?): KSirenJsonWriter = apply { gsonWriter.value(value) }
+	override fun value(value: Double?): KSirenJsonWriter = apply { gsonWriter.value(value) }
+	override fun value(value: Boolean?): KSirenJsonWriter = apply { gsonWriter.value(value) }
 }

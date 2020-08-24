@@ -19,15 +19,17 @@ import java.lang.Exception
  */
 internal object JsonUtils {
 	fun toJson(entity: Entity, writer: KSirenJsonWriter): String {
-		writeEntity(entity, writer)
-		writer.close()
+		writer.use {
+			writeEntity(entity, writer)
+		}
 
 		return writer.getSerializedString()
 	}
 
 	fun toJson(action: Action, writer: KSirenJsonWriter): String {
-		writeAction(action, writer)
-		writer.close()
+		writer.use {
+			writeAction(action, writer)
+		}
 
 		return writer.getSerializedString()
 	}
@@ -47,7 +49,7 @@ internal object JsonUtils {
 			is BooleanValue -> writer.value(value.booleanValue)
 			is ArrayValue -> {
 				writer.beginArray()
-				value.arrayElements.forEach() { el -> writePropertyValue(el, writer) }
+				value.arrayElements.forEach { el -> writePropertyValue(el, writer) }
 				writer.endArray()
 			}
 			is ObjectValue -> writeProperties(value.objectProperties, writer)
@@ -67,10 +69,7 @@ internal object JsonUtils {
 			writeStringArray(entity.rel, writer)
 		}
 
-		entity.href?.let {
-			writer.name("href")
-				.value(entity.href)
-		}
+		entity.href?.let { href -> writer.name("href").value(href) }
 
 		if (entity.enhancedProperties.isNotEmpty()) {
 			writer.name("properties")
@@ -80,111 +79,86 @@ internal object JsonUtils {
 		if (entity.entities.isNotEmpty()) {
 			writer.name("entities")
 			writer.beginArray()
-			entity.entities.forEach() { subEntity -> writeEntity(subEntity, writer) }
+			entity.entities.forEach { subEntity -> writeEntity(subEntity, writer) }
 			writer.endArray()
 		}
 
 		if (entity.actions.isNotEmpty()) {
 			writer.name("actions")
 			writer.beginArray()
-			entity.actions.forEach() { (_, action) -> writeAction(action, writer) }
+			entity.actions.values.forEach { action -> writeAction(action, writer) }
 			writer.endArray()
 		}
 
 		if (entity.links.isNotEmpty()) {
 			writer.name("links")
-			writeLinks(entity.links, writer)
+			writer.beginArray()
+			entity.links.forEach { link -> writeLink(link, writer) }
+			writer.endArray()
 		}
 
 		writer.endObject()
 	}
 
-	private fun writeLinks(links: Collection<Link>, writer: KSirenJsonWriter) {
-		writer.beginArray()
+	private fun writeLink(link: Link, writer: KSirenJsonWriter) {
+		if (link.rels.isEmpty()) throw Exception("link must have at least one rel")
 
-		links.forEach() { link ->
-			if (link.rels.isEmpty()) throw Exception("link must have at least one rel")
+		writer.beginObject()
 
-			writer.beginObject()
+		link.title?.let { title -> writer.name("title").value(title) }
 
-			link.title?.let { title ->
-				writer.name("title")
-					.value(title)
-			}
-
-			if (link.classes.isNotEmpty()) {
-				writer.name("class")
-				writeStringArray(link.classes, writer)
-			}
-
-			writer.name("rel")
-			writeStringArray(link.rels, writer)
-
-			writer.name("href")
-				.value(link.href)
-
-			writer.name("type")
-				.value(link.type)
-
-			writer.endObject()
+		if (link.classes.isNotEmpty()) {
+			writer.name("class")
+			writeStringArray(link.classes, writer)
 		}
 
-		writer.endArray()
+		writer.name("rel")
+		writeStringArray(link.rels, writer)
+
+		writer.name("href").value(link.href)
+		writer.name("type").value(link.type)
+
+		writer.endObject()
 	}
 
 	private fun writeAction(action: Action, writer: KSirenJsonWriter) {
 		writer.beginObject()
 
-		writer.name("name")
-			.value(action.name)
+		writer.name("name").value(action.name)
 
 		if (action.classes.isNotEmpty()) {
 			writer.name("class")
 			writeStringArray(action.classes, writer)
 		}
 
-		action.title?.let { title ->
-			writer.name("title")
-				.value(title)
-		}
+		action.title?.let { title -> writer.name("title").value(title) }
 
-		writer.name("type")
-			.value(action.type.value)
-
-		writer.name("href")
-			.value(action.href)
-
-		writer.name("method")
-			.value(action.method)
+		writer.name("type").value(action.type.value)
+		writer.name("href").value(action.href)
+		writer.name("method").value(action.method)
 
 		if (action.fields.isNotEmpty()) {
 			if (action.fields.isEmpty())
 				return
 
 			writer.name("fields")
-
 			writer.beginArray()
-			action.fields.mapNotNull { field ->
-				writer.beginObject()
 
-				writer.name("name")
-					.value(field.name)
+			action.fields.forEach { field ->
+				writer.beginObject()
+				writer.name("name").value(field.name)
 
 				if (field.classes.isNotEmpty()) {
 					writer.name("class")
 					writeStringArray(field.classes, writer)
 				}
 
-				writer.name("type")
-					.value(field.type)
-
-				field.value?.let { value ->
-					writer.name("value")
-						.value(value)
-				}
+				writer.name("type").value(field.type)
+				field.value?.let { value -> writer.name("value").value(value) }
 
 				writer.endObject()
 			}
+
 			writer.endArray()
 		}
 
@@ -193,7 +167,7 @@ internal object JsonUtils {
 
 	private fun writeStringArray(values: List<String>, writer: KSirenJsonWriter) {
 		writer.beginArray()
-		values.forEach() { value -> writer.value(value) }
+		values.forEach { value -> writer.value(value) }
 		writer.endArray()
 	}
 }

@@ -103,7 +103,7 @@ data class Entity internal constructor(
 					"rel" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, { rel.add(it) })
+							conditionalRead(reader) { rel.add(it) }
 						}
 						reader.endArray()
 					}

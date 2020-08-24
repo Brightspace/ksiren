@@ -104,15 +104,16 @@ data class Action(
 	override fun toJson(writer: KSirenJsonWriter): String = JsonUtils.toJson(this, writer)
 
 	fun toJsonRequestBody(writer: KSirenJsonWriter): String {
-		writer.beginObject()
+		writer.use {
+			writer.beginObject()
 
-		fields.forEach() { field ->
-			writer.name(field.name)
-			writer.value(field.value)
+			fields.forEach { field ->
+				writer.name(field.name)
+				writer.value(field.value)
+			}
+
+			writer.endObject()
 		}
-
-		writer.endObject()
-		writer.close()
 
 		return writer.getSerializedString()
 	}

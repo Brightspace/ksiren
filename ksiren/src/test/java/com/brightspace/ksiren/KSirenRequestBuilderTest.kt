@@ -29,13 +29,13 @@ class KSirenRequestBuilderTest {
 
 	private fun returnAction(method: String, contentType: ContentType): Action {
 		return Action(
-			"test",
-			listOf(),
-			method,
-			"http://www.example.com",
-			"title",
-			contentType,
-			listOf(Field("testParam", listOf(), "text", null)))
+			name = "test",
+			classes = listOf(),
+			method = method,
+			href = "http://www.example.com",
+			title = "title",
+			type = contentType,
+			fields = listOf(Field("testParam", listOf(), "text", null)))
 	}
 
 	@Test

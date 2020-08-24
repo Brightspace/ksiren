@@ -1,5 +1,7 @@
 package com.brightspace.ksiren
 
+import java.io.Closeable
+
 /**
  * Copyright 2017 D2L Corporation
  *
@@ -15,7 +17,7 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-interface KSirenJsonWriter {
+interface KSirenJsonWriter: Closeable {
 	val getSerializedString: () -> String
 
 	fun beginObject(): KSirenJsonWriter
@@ -24,7 +26,7 @@ interface KSirenJsonWriter {
 	fun beginArray(): KSirenJsonWriter
 	fun endArray(): KSirenJsonWriter
 
-	fun close()
+	override fun close()
 
 	fun name(name: String): KSirenJsonWriter
 

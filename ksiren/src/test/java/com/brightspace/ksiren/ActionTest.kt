@@ -74,9 +74,8 @@ class ActionTest {
 
 	@Test
 	fun expectEscapedFieldString() {
-		val writer = KSirenMoshiWriterFactory().create()
 		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
-		val actionJson = action.toJson(writer)
+		val actionJson = action.toJson(KSirenMoshiWriterFactory().create())
 		val parsedAction = Action.fromJson(actionJson.toKSirenJsonReader())
 
 		assertEquals(stringRequiringJsonEscape, parsedAction.fields.find { it.name == "escapedString" }?.value)
@@ -84,9 +83,8 @@ class ActionTest {
 
 	@Test
 	fun expectSerializedRequestBody() {
-		val writer = KSirenMoshiWriterFactory().create()
 		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
-		val jsonRequestBody = action.toJsonRequestBody(writer)
+		val jsonRequestBody = action.toJsonRequestBody(KSirenMoshiWriterFactory().create())
 		val expectedBody = """{"escapedString":"\"quoted text\"\n\t█\b\f \\ / \\/ \\\\ "}"""
 
 		assertEquals(expectedBody, jsonRequestBody)
