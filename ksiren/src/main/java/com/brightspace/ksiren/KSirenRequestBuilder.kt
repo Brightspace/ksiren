@@ -18,9 +18,8 @@ package com.brightspace.ksiren
 abstract class KSirenRequestBuilder<T>(referenceAction: Action) {
 	protected val action = referenceAction.deepCopy()
 
-	fun addFieldValue(name: String, value: String): KSirenRequestBuilder<T> {
+	fun addFieldValue(name: String, value: String): KSirenRequestBuilder<T> = apply {
 		action.fields.find { field -> field.name == name }?.value = value
-		return this
 	}
 
 	abstract fun build(): T

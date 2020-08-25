@@ -2,15 +2,16 @@ package com.brightspace.ksiren.moshi_adapter
 
 import com.brightspace.ksiren.KSirenJsonWriter
 import com.squareup.moshi.JsonWriter
+import okio.Buffer
 import java.io.Closeable
 
-class KSirenMoshiWriter(
-	private val moshiWriter: JsonWriter,
-	override val getSerializedString: () -> String) : KSirenJsonWriter, Closeable {
-
-	init {
-		moshiWriter.serializeNulls = false
+class KSirenMoshiWriter : KSirenJsonWriter, Closeable {
+	private val buffer = Buffer()
+	private val moshiWriter = JsonWriter.of(buffer).apply {
+		serializeNulls = false
 	}
+
+	override fun getSerializedString(): String = buffer.readUtf8()
 
 	override fun beginObject(): KSirenJsonWriter = apply { moshiWriter.beginObject() }
 	override fun endObject(): KSirenJsonWriter = apply { moshiWriter.endObject() }

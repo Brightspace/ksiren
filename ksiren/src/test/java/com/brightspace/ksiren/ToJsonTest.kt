@@ -1,16 +1,15 @@
 package com.brightspace.ksiren
 
-import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriterFactory
+import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriter
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class ToJsonTest {
 	@Test
 	fun testClassesToJson() {
-		val writer = KSirenMoshiWriterFactory().create()
 		val classes = listOf("class a", "class b")
 		val entity = Entity(classes = classes, href = null, title = null)
-		val json = entity.toJson(writer)
+		val json = entity.toJson(KSirenMoshiWriter())
 		val entityFromJson = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
 			actual = entityFromJson.classes,
@@ -20,9 +19,8 @@ class ToJsonTest {
 	@Test
 	fun testRelToJson() {
 		val rel = listOf("rel a", "rel b")
-		val writer = KSirenMoshiWriterFactory().create()
 		val entity = Entity(rel = rel, href = null, title = null)
-		val json = entity.toJson(writer)
+		val json = entity.toJson(KSirenMoshiWriter())
 		val entityFromJson = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
 			actual = entityFromJson.rel,
@@ -49,8 +47,7 @@ class ToJsonTest {
 				ObjectValue(mapOf(*basicProperties("Nested"))),
 				ArrayValue(basicValues()))))
 		val entity = Entity(enhancedProperties = properties, href = null, title = null)
-		val writer = KSirenMoshiWriterFactory().create()
-		val json = entity.toJson(writer)
+		val json = entity.toJson(KSirenMoshiWriter())
 		val entityFromJson = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
 			actual = entityFromJson.enhancedProperties,
@@ -63,8 +60,7 @@ class ToJsonTest {
 			Entity(classes = listOf("sub-entity"), href = null, title = null)
 		)
 		val entity = Entity(entities = subEntities, href = null, title = null)
-		val writer = KSirenMoshiWriterFactory().create()
-		val json = entity.toJson(writer)
+		val json = entity.toJson(KSirenMoshiWriter())
 		val entityFromJson = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
 			actual = entityFromJson.entities,
@@ -92,8 +88,7 @@ class ToJsonTest {
 			)
 		}.toMap()
 		val entity = Entity(actions = actions, href = null, title = null)
-		val writer = KSirenMoshiWriterFactory().create()
-		val json = entity.toJson(writer)
+		val json = entity.toJson(KSirenMoshiWriter())
 		val entityFromJson = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
 			actual = entityFromJson.actions,
@@ -111,8 +106,7 @@ class ToJsonTest {
 				type = "link type $i")
 		}
 		val entity = Entity(links = links, href = null, title = null)
-		val writer = KSirenMoshiWriterFactory().create()
-		val json = entity.toJson(writer)
+		val json = entity.toJson(KSirenMoshiWriter())
 		val entityFromJson = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
 			actual = entityFromJson.links,

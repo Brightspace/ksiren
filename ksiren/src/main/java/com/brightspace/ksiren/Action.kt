@@ -87,19 +87,9 @@ data class Action(
 		}
 	}
 
-	fun deepCopy(): Action {
-		return Action(
-			name,
-			classes,
-			method,
-			href,
-			title,
-			type,
-			fields.map() { field -> field.copy() }
-		)
-	}
+	fun deepCopy(): Action = copy(fields = fields.map { field -> field.copy() })
 
-	fun hasField(name: String): Boolean = this.fields.any() { field -> field.name == name }
+	fun hasField(name: String): Boolean = this.fields.any { field -> field.name == name }
 
 	override fun toJson(writer: KSirenJsonWriter): String = JsonUtils.toJson(this, writer)
 
