@@ -17,7 +17,7 @@ import java.io.Closeable
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-interface KSirenJsonWriter: Closeable {
+interface KSirenJsonWriter : Closeable {
 	fun getSerializedString(): String
 
 	fun beginObject(): KSirenJsonWriter

@@ -52,18 +52,18 @@ class KSirenRequestBuilderTest {
 		ContentType.FORM,
 		ContentType.JSON
 	).map { contentType ->
-			DynamicTest.dynamicTest("when Content-Type is $contentType") {
-				val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(
-					createAction("POST", contentType),
-					KSirenMoshiWriter()
-				)
-				requestBuilder.addFieldValue("testParam", "testValue")
-				requestBuilder.build()
+		DynamicTest.dynamicTest("when Content-Type is $contentType") {
+			val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(
+				createAction("POST", contentType),
+				KSirenMoshiWriter()
+			)
+			requestBuilder.addFieldValue("testParam", "testValue")
+			requestBuilder.build()
 
-				//As far as I know there isn't a good way to verify the requestbody
-				//however, doing so would only be testing Okhttp3 anyway. Ensuring
-				//this doesn't throw an exception should be good enough.
-				Assertions.assertTrue(true)
-			}
+			//As far as I know there isn't a good way to verify the requestbody
+			//however, doing so would only be testing Okhttp3 anyway. Ensuring
+			//this doesn't throw an exception should be good enough.
+			Assertions.assertTrue(true)
 		}
+	}
 }

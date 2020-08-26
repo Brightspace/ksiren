@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
  */
 class DefinedEntityTest {
 
-	class TestEntity1(baseEntity: Entity): DefinedEntity(baseEntity, KSirenEntitySignature(
+	class TestEntity1(baseEntity: Entity) : DefinedEntity(baseEntity, KSirenEntitySignature(
 		listOf("test1"),
 		listOf(),
 		listOf(),
@@ -18,7 +18,7 @@ class DefinedEntityTest {
 		val classes = baseEntity.classes
 	}
 
-	class TestEntity2(baseEntity: Entity): DefinedEntity(baseEntity, KSirenEntitySignature(
+	class TestEntity2(baseEntity: Entity) : DefinedEntity(baseEntity, KSirenEntitySignature(
 		listOf("test2"),
 		listOf(),
 		listOf(),
@@ -27,7 +27,7 @@ class DefinedEntityTest {
 		val classes = baseEntity.classes
 	}
 
-	class TestEntity3(baseEntity: Entity): DefinedEntity(baseEntity, KSirenEntitySignature(
+	class TestEntity3(baseEntity: Entity) : DefinedEntity(baseEntity, KSirenEntitySignature(
 		listOf("test3"),
 		listOf(),
 		listOf(),
@@ -41,7 +41,7 @@ class DefinedEntityTest {
 		val json = """{"class": ["test1"], "entities":[{"class":["test2"],"href":"http://example.com.test"}]}"""
 		val entity = TestEntity1(Entity.fromJson(json.toKSirenJsonReader()))
 
-		val subEntities: List<TestEntity3> = entity.getSubEntitiesOfType(object: KSirenEntityFetchClient() {
+		val subEntities: List<TestEntity3> = entity.getSubEntitiesOfType(object : KSirenEntityFetchClient() {
 			override fun executeCall(href: String): KSirenJsonReader {
 				if (href == "http://example.com.test") {
 					return KSirenMoshiReaderFactory()
@@ -62,7 +62,7 @@ class DefinedEntityTest {
 		val json = """{"class": ["test1"], "entities":[{"class":["test2"],"href":"http://example.com.test"}]}"""
 		val entity = TestEntity1(Entity.fromJson(json.toKSirenJsonReader()))
 
-		val subEntities: List<TestEntity2> = entity.getSubEntitiesOfType(object: KSirenEntityFetchClient() {
+		val subEntities: List<TestEntity2> = entity.getSubEntitiesOfType(object : KSirenEntityFetchClient() {
 			override fun executeCall(href: String): KSirenJsonReader {
 				if (href == "http://example.com.test") {
 					return KSirenMoshiReaderFactory()

@@ -11,10 +11,6 @@ class KSirenGsonWriter : KSirenJsonWriter, Closeable {
 		serializeNulls = false
 	}
 
-	init {
-		gsonWriter.serializeNulls = false
-	}
-
 	override fun getSerializedString(): String = buffer.toString()
 
 	override fun beginObject(): KSirenJsonWriter = apply { gsonWriter.beginObject() }

@@ -47,8 +47,8 @@ class KSirenMoshiReader(val moshiReader: JsonReader) : KSirenJsonReader() {
 	override fun nextStringImpl(): String {
 		try {
 			return moshiReader.nextString()
-		} catch( e: Exception) {
-			throw KSirenException.ParseException(e.message?:"Reading string failed")
+		} catch (e: Exception) {
+			throw KSirenException.ParseException(e.message ?: "Reading string failed")
 		}
 	}
 

@@ -36,8 +36,9 @@ abstract class KSirenJsonReader {
 		try {
 			nextNull()
 			return null
-		} catch(e: Exception) {
-			throw KSirenException.ParseException(e.message?:"Could not parse value as String, Boolean or null value.")
+		} catch (e: Exception) {
+			throw KSirenException.ParseException(e.message
+				?: "Could not parse value as String, Boolean or null value.")
 		}
 	}
 

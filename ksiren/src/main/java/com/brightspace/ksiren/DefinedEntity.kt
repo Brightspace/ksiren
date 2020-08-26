@@ -30,7 +30,7 @@ abstract class DefinedEntity(val entity: Entity, signature: KSirenEntitySignatur
 	 *
 	 * WARNING: This function uses the network, and will block on the thread it is called from.
 	 */
-	fun <T:DefinedEntity>getSubEntitiesOfType(client: KSirenEntityFetchClient, factory: (Entity) -> T): List<T> {
+	fun <T : DefinedEntity> getSubEntitiesOfType(client: KSirenEntityFetchClient, factory: (Entity) -> T): List<T> {
 		val resultArr: MutableList<T> = mutableListOf()
 
 		for (i in subEntities.indices) {
@@ -41,7 +41,7 @@ abstract class DefinedEntity(val entity: Entity, signature: KSirenEntitySignatur
 			}
 
 			try {
-				val entity:T = factory(subEntities[i])
+				val entity: T = factory(subEntities[i])
 				resultArr.add(entity)
 			} catch (e: KSirenException.ValidationException) {
 				//Do, nothing, this sub entity just doesn't match the requested type

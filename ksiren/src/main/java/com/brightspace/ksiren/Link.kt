@@ -37,19 +37,19 @@ data class Link(
 					"rel" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {rels.add(it)})
+							conditionalRead(reader, { rels.add(it) })
 						}
 						reader.endArray()
 					}
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {classes.add(it)})
+							conditionalRead(reader, { classes.add(it) })
 						}
 						reader.endArray()
 					}
 					"href" -> {
-						conditionalRead(reader, {href = it})
+						conditionalRead(reader, { href = it })
 					}
 					"title" -> {
 						title = reader.nextString()

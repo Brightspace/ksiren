@@ -28,6 +28,7 @@ class ActionTest {
 	 */
 	private val stringRequiringJsonEscape = """"quoted text"
 	█ \ / \/ \\ """
+
 	private fun createJsonAction(fields: List<Field> = listOf()) =
 		Action(
 			"test-action",

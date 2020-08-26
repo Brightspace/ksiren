@@ -12,6 +12,7 @@ class BooleanValue private constructor(val booleanValue: Boolean) : PropertyValu
 		val FALSE = BooleanValue(false)
 		fun from(b: Boolean) = if (b) TRUE else FALSE
 	}
+
 	override fun toString() = booleanValue.toString()
 }
 

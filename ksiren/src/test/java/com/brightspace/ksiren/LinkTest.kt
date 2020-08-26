@@ -21,14 +21,14 @@ import kotlin.test.assertTrue
  * limitations under the License.
  */
 class LinkTest {
-    @Test
-    fun expectLink() {
-        val json: String = """{ "rel": [ "self" ], "class": [ "link" ], "title": "my link", "type": "text/plain", "href": "http://api.x.io/orders/42" }"""
-        val link: Link = Link.fromJson(json.toKSirenJsonReader())
+	@Test
+	fun expectLink() {
+		val json: String = """{ "rel": [ "self" ], "class": [ "link" ], "title": "my link", "type": "text/plain", "href": "http://api.x.io/orders/42" }"""
+		val link: Link = Link.fromJson(json.toKSirenJsonReader())
 
-        assertEquals(listOf("self"), link.rels)
-        assertEquals("http://api.x.io/orders/42", link.href)
+		assertEquals(listOf("self"), link.rels)
+		assertEquals("http://api.x.io/orders/42", link.href)
 		assertTrue(link.hasClass("link"))
 		assertFalse(link.hasClass("notLink"))
-    }
+	}
 }

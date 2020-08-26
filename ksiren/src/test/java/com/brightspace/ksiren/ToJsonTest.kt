@@ -35,6 +35,7 @@ class ToJsonTest {
 				"${prefix}TrueProperty" to BooleanValue.TRUE,
 				"${prefix}FalseProperty" to BooleanValue.FALSE)
 		}
+
 		fun basicValues() = basicProperties().map { it.second }
 		val properties = mapOf(
 			*basicProperties(),
