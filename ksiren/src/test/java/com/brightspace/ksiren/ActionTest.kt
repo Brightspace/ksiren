@@ -1,6 +1,9 @@
 package com.brightspace.ksiren
+
+import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriter
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
@@ -19,37 +22,72 @@ import kotlin.test.assertTrue
  * limitations under the License.
  */
 class ActionTest {
-    @Test
-    fun expectAction() {
-        val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing","fields": [{"name": "test","type": "number","value": "1"}]}"""
+	/**
+	 * A string which has various characters requiring escaping as per https://tools.ietf.org/html/rfc7159#section-7
+	 * including: double-quotes, newline, tab, solidus, and several other control characters
+	 */
+	private val stringRequiringJsonEscape = """"quoted text"
+	█ \ / \/ \\ """
 
-        val action: Action = Action.fromJson(json.toKSirenJsonReader())
-        assertEquals("TestAction", action.name)
-        assertEquals("GET", action.method)
-        assertEquals("http://api.x.io/orders/42/items", action.href)
-        assertEquals("Test this thing", action.title)
-        assertEquals("Test this thing", action.title)
-        assertTrue(action.fields.isNotEmpty())
-    }
+	private fun createJsonAction(fields: List<Field> = listOf()) =
+		Action(
+			"test-action",
+			listOf(),
+			"POST",
+			"https://foo.bar",
+			"action-siren-title",
+			ContentType.JSON,
+			fields)
 
-    @Test
-    fun expectActionWithNoFields() {
-        val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing"}"""
+	@Test
+	fun expectAction() {
+		val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing","fields": [{"name": "test","type": "number","value": "1"}]}"""
 
-        val action: Action = Action.fromJson(json.toKSirenJsonReader())
-        assertEquals("TestAction", action.name)
-        assertEquals("GET", action.method)
-        assertEquals("http://api.x.io/orders/42/items", action.href)
-        assertEquals("Test this thing", action.title)
-        assertEquals("Test this thing", action.title)
-    }
+		val action: Action = Action.fromJson(json.toKSirenJsonReader())
+		assertEquals("TestAction", action.name)
+		assertEquals("GET", action.method)
+		assertEquals("http://api.x.io/orders/42/items", action.href)
+		assertEquals("Test this thing", action.title)
+		assertTrue(action.fields.isNotEmpty())
+	}
 
-    @Test
-    fun expectActionWithField() {
-        val json: String = """{ "name": "add-item", "title": "Add Item", "method": "GET", "href": "http://api.x.io/orders/42/items", "fields": [{ "name": "orderNumber", "type": "hidden", "value": "42" }, { "name": "productCode", "type": "text" }, { "name": "quantity", "type": "number" }] }"""
-        val action: Action = Action.fromJson(json.toKSirenJsonReader())
-        assertTrue(action.hasField("orderNumber"))
-        assertTrue(action.hasField("productCode"))
-        assertTrue(action.hasField("quantity"))
-    }
+	@Test
+	fun expectActionWithNoFields() {
+		val json: String = """{"name": "TestAction","method": "GET","href": "http://api.x.io/orders/42/items","title": "Test this thing"}"""
+
+		val action: Action = Action.fromJson(json.toKSirenJsonReader())
+		assertEquals("TestAction", action.name)
+		assertEquals("GET", action.method)
+		assertEquals("http://api.x.io/orders/42/items", action.href)
+		assertEquals("Test this thing", action.title)
+		assertEquals("Test this thing", action.title)
+	}
+
+	@Test
+	fun expectActionWithField() {
+		val json: String = """{ "name": "add-item", "title": "Add Item", "method": "GET", "href": "http://api.x.io/orders/42/items", "fields": [{ "name": "orderNumber", "type": "hidden", "value": "42" }, { "name": "productCode", "type": "text" }, { "name": "quantity", "type": "number" }] }"""
+		val action: Action = Action.fromJson(json.toKSirenJsonReader())
+		assertTrue(action.hasField("orderNumber"))
+		assertTrue(action.hasField("productCode"))
+		assertTrue(action.hasField("quantity"))
+		assertFalse(action.hasField("doesNotExist"))
+	}
+
+	@Test
+	fun expectEscapedFieldString() {
+		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
+		val actionJson = action.toJson(KSirenMoshiWriter())
+		val parsedAction = Action.fromJson(actionJson.toKSirenJsonReader())
+
+		assertEquals(stringRequiringJsonEscape, parsedAction.fields.find { it.name == "escapedString" }?.value)
+	}
+
+	@Test
+	fun expectSerializedRequestBody() {
+		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
+		val jsonRequestBody = action.toJsonRequestBody(KSirenMoshiWriter())
+		val expectedBody = """{"escapedString":"\"quoted text\"\n\t█\b\f \\ / \\/ \\\\ "}"""
+
+		assertEquals(expectedBody, jsonRequestBody)
+	}
 }

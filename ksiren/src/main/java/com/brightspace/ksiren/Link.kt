@@ -20,7 +20,7 @@ data class Link(
 	val classes: List<String> = listOf(),
 	val href: String,
 	val title: String?,
-	val type: String?) : JsonSerializable {
+	val type: String?) {
 
 	companion object {
 
@@ -37,19 +37,19 @@ data class Link(
 					"rel" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {rels.add(it)})
+							conditionalRead(reader, { rels.add(it) })
 						}
 						reader.endArray()
 					}
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {classes.add(it)})
+							conditionalRead(reader, { classes.add(it) })
 						}
 						reader.endArray()
 					}
 					"href" -> {
-						conditionalRead(reader, {href = it})
+						conditionalRead(reader, { href = it })
 					}
 					"title" -> {
 						title = reader.nextString()
@@ -84,6 +84,4 @@ data class Link(
 	fun hasClass(vararg clazz: String): Boolean {
 		return classes.containsAll(clazz.toList())
 	}
-
-	override fun toJson() = JsonUtils.toJson(this)
 }

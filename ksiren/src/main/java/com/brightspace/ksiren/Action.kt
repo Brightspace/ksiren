@@ -15,6 +15,7 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 data class Action(
 	val name: String,
 	val classes: List<String> = listOf(),
@@ -41,24 +42,24 @@ data class Action(
 					"class" -> {
 						reader.beginArray()
 						while (reader.hasNext()) {
-							conditionalRead(reader, {classes.add(it)})
+							conditionalRead(reader, { classes.add(it) })
 						}
 						reader.endArray()
 					}
 					"name" -> {
-						conditionalRead(reader, {name = it})
+						conditionalRead(reader, { name = it })
 					}
 					"method" -> {
-						conditionalRead(reader, {method = it})
+						conditionalRead(reader, { method = it })
 					}
 					"href" -> {
-						conditionalRead(reader, {href = it})
+						conditionalRead(reader, { href = it })
 					}
 					"title" -> {
 						title = reader.nextString()
 					}
 					"type" -> {
-						conditionalRead(reader, {type = ContentType.parse(it)})
+						conditionalRead(reader, { type = ContentType.parse(it) })
 					}
 					"fields" -> {
 						reader.beginArray()
@@ -74,7 +75,7 @@ data class Action(
 			return validate(finishedAction)
 		}
 
-		fun validate(obj: Action): Action {
+		private fun validate(obj: Action): Action {
 			if (obj.name == "" && obj.href == "") {
 				throw KSirenException.ValidationException("Validation of action failed, href and name are empty.")
 			} else if (obj.name == "") {
@@ -86,14 +87,24 @@ data class Action(
 		}
 	}
 
-	fun hasField(name: String): Boolean {
-		this.fields.forEach {
-			if (it.name == name) {
-				return true
-			}
-		}
-		return false
-	}
+	fun deepCopy(): Action = copy(fields = fields.map { field -> field.copy() })
 
-	override fun toJson() = JsonUtils.toJson(this)
+	fun hasField(name: String): Boolean = this.fields.any { field -> field.name == name }
+
+	override fun toJson(writer: KSirenJsonWriter): String = JsonUtils.toJson(this, writer)
+
+	fun toJsonRequestBody(writer: KSirenJsonWriter): String {
+		writer.use {
+			writer.beginObject()
+
+			fields.forEach { field ->
+				writer.name(field.name)
+				writer.value(field.value)
+			}
+
+			writer.endObject()
+		}
+
+		return writer.getSerializedString()
+	}
 }

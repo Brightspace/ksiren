@@ -15,22 +15,11 @@ package com.brightspace.ksiren
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class KSirenRequestBuilder<T>(val action: Action) {
-	protected val fieldValues: MutableMap<String, String> = mutableMapOf()
+abstract class KSirenRequestBuilder<T>(referenceAction: Action) {
+	protected val action = referenceAction.deepCopy()
 
-	init {
-		action.fields.forEach {
-			field ->
-
-			field.value?.let {
-				fieldValues[field.name] = it
-			}
-		}
-	}
-
-	fun addFieldValue(name: String, value: String): KSirenRequestBuilder<T> {
-		fieldValues.put(name, value)
-		return this
+	fun addFieldValue(name: String, value: String): KSirenRequestBuilder<T> = apply {
+		action.fields.find { field -> field.name == name }?.value = value
 	}
 
 	abstract fun build(): T

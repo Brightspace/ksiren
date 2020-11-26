@@ -1,8 +1,6 @@
 package com.brightspace.ksiren
 
-sealed class PropertyValue : JsonSerializable {
-	override fun toJson() = JsonUtils.toJson(this)
-}
+sealed class PropertyValue
 
 data class StringValue(val stringValue: String) : PropertyValue()
 
@@ -14,6 +12,7 @@ class BooleanValue private constructor(val booleanValue: Boolean) : PropertyValu
 		val FALSE = BooleanValue(false)
 		fun from(b: Boolean) = if (b) TRUE else FALSE
 	}
+
 	override fun toString() = booleanValue.toString()
 }
 

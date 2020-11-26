@@ -2,6 +2,7 @@ package com.brightspace.ksiren.okhttp3_request_builder
 
 import com.brightspace.ksiren.Action
 import com.brightspace.ksiren.ContentType
+import com.brightspace.ksiren.KSirenJsonWriter
 import com.brightspace.ksiren.KSirenRequestBuilder
 import okhttp3.*
 
@@ -20,19 +21,17 @@ import okhttp3.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<Request>(wrappedAction) {
-
+class KSirenOkhttp3RequestBuilder(wrappedAction: Action, private val writer: KSirenJsonWriter) : KSirenRequestBuilder<Request>(wrappedAction) {
 	override fun build(): Request {
 		val requestBuilder: Request.Builder = Request.Builder()
-		val urlBuilder: HttpUrl.Builder? = HttpUrl.parse(action.href)?.newBuilder()
+		val urlBuilder: HttpUrl.Builder = HttpUrl.parse(action.href)?.newBuilder()
+			?: throw Exception("Action href could not be parsed")
 
 		if (action.fields.isNotEmpty()) {
 			when (action.method) {
 				"GET" -> {
-					fieldValues.forEach {
-						(name, value) ->
-
-						urlBuilder?.addQueryParameter(name, value)
+					action.fields.forEach {
+						urlBuilder.addQueryParameter(it.name, it.value)
 					}
 					requestBuilder.get()
 				}
@@ -42,7 +41,7 @@ class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<R
 			}
 		}
 
-		requestBuilder.url(urlBuilder?.build())
+		requestBuilder.url(urlBuilder.build())
 
 		return requestBuilder.build()
 	}
@@ -51,37 +50,18 @@ class KSirenOkhttp3RequestBuilder(wrappedAction: Action): KSirenRequestBuilder<R
 		when (action.type) {
 			ContentType.JSON -> {
 				val mediaType = MediaType.parse(action.type.value)
+				val jsonBody = action.toJsonRequestBody(writer)
 
-				val json = StringBuilder()
-				json.append("{")
-
-				var count = 0
-				fieldValues.forEach { (name, value) ->
-					if (count > 0) {
-						json.append(", ")
-					}
-
-					json.append("\"")
-					json.append(name)
-					json.append("\": \"")
-					json.append(value)
-					json.append("\"")
-
-					count += 1
-				}
-
-				json.append("}")
-				return RequestBody.create(mediaType, json.toString())
+				return RequestBody.create(mediaType, jsonBody)
 			}
 
 			ContentType.FORM -> {
 				val requestBodyBuilder: MultipartBody.Builder = MultipartBody.Builder()
 					.setType(MultipartBody.FORM)
 
-				fieldValues.forEach {
-					(name, value) ->
-					requestBodyBuilder.addFormDataPart(name, value)
-				}
+				action.fields
+					.mapNotNull { field -> field.value?.let { value -> field.name to value } }
+					.forEach() { pair -> requestBodyBuilder.addFormDataPart(pair.first, pair.second) }
 
 				return requestBodyBuilder.build()
 			}

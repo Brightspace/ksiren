@@ -21,15 +21,15 @@ import kotlin.test.assertTrue
  * limitations under the License.
  */
 class FieldTest {
-    @Test
-    fun expectField() {
-        val field: Field = Field.fromJson("""{ "class":["class1", "class2"], "name": "orderNumber", "type": "hidden", "value": "42" }""".toKSirenJsonReader())
-        assertEquals("orderNumber", field.name)
-        assertEquals("hidden", field.type)
-        assertEquals("42", field.value)
-        assertTrue(field.classes.contains("class1"))
-        assertTrue(field.classes.contains("class2"))
-    }
+	@Test
+	fun expectField() {
+		val field: Field = Field.fromJson("""{ "class":["class1", "class2"], "name": "orderNumber", "type": "hidden", "value": "42" }""".toKSirenJsonReader())
+		assertEquals("orderNumber", field.name)
+		assertEquals("hidden", field.type)
+		assertEquals("42", field.value)
+		assertTrue(field.classes.contains("class1"))
+		assertTrue(field.classes.contains("class2"))
+	}
 
 	@Test
 	fun expectFieldValueArray() {
@@ -57,12 +57,12 @@ class FieldTest {
 		assertEquals(null, field.value)
 	}
 
-    @Test
-    fun expectJsonException() {
-        try {
-            Field.fromJson("""{ "name": "orderNumber" "type": "hidden", "value": "42" }""".toKSirenJsonReader())
-        } catch (ex: JsonEncodingException) {
-            assert(true)
-        }
-    }
+	@Test
+	fun expectJsonException() {
+		try {
+			Field.fromJson("""{ "name": "orderNumber" "type": "hidden", "value": "42" }""".toKSirenJsonReader())
+		} catch (ex: JsonEncodingException) {
+			assert(true)
+		}
+	}
 }

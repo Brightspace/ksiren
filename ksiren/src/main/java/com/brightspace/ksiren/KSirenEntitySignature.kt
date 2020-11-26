@@ -38,7 +38,7 @@ class KSirenEntitySignature(
 				throw KSirenException.ValidationException("Object is missing required action: ".plus(it))
 			}
 		}
-		requiredLinkRels.forEach outer@ {
+		requiredLinkRels.forEach outer@{
 			val rel: String = it
 			entity.links.forEach {
 				if (it.hasRel(rel)) {

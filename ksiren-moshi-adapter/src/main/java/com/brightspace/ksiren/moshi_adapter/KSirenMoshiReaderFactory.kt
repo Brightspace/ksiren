@@ -21,9 +21,9 @@ import java.nio.charset.StandardCharsets
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenMoshiReaderFactory: KSirenJsonReaderFactory {
-	override fun getKSirenJsonReader(string: String): KSirenMoshiAdapter {
-		return KSirenMoshiAdapter(JsonReader.of(
+class KSirenMoshiReaderFactory : KSirenJsonReaderFactory {
+	override fun getKSirenJsonReader(string: String): KSirenMoshiReader {
+		return KSirenMoshiReader(JsonReader.of(
 			Okio.buffer(
 				Okio.source(
 					ByteArrayInputStream(

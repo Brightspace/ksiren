@@ -1,10 +1,13 @@
 package com.brightspace.ksiren
 
+import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriter
 import com.brightspace.ksiren.okhttp3_request_builder.KSirenOkhttp3RequestBuilder
 import okhttp3.Request
 import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.TestFactory
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 /**
  * Copyright 2017 D2L Corporation
@@ -23,29 +26,44 @@ import kotlin.test.assertTrue
  */
 class KSirenRequestBuilderTest {
 
-    fun returnAction(method: String): Action {
-        return Action("test", listOf(), method, "http://www.example.com", "title", ContentType.FORM,
-                listOf(Field("testParam", listOf(), "text", null)))
-    }
+	private fun createAction(method: String, contentType: ContentType): Action {
+		return Action(
+			name = "test",
+			classes = listOf(),
+			method = method,
+			href = "http://www.example.com",
+			title = "title",
+			type = contentType,
+			fields = listOf(Field("testParam", listOf(), "text", null)))
+	}
 
-    @Test
-    fun testGetBuilder() {
-        val action: Action = returnAction("GET")
-        val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(action)
-        requestBuilder.addFieldValue("testParam", "testValue")
-        assertEquals("http://www.example.com/?testParam=testValue", requestBuilder.build().url().toString())
-    }
+	@Test
+	fun testGetBuilder() {
+		val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(
+			createAction("GET", ContentType.FORM),
+			KSirenMoshiWriter()
+		)
+		requestBuilder.addFieldValue("testParam", "testValue")
+		assertEquals("http://www.example.com/?testParam=testValue", requestBuilder.build().url().toString())
+	}
 
-    @Test
-    fun testPostBuilder() {
-        val action: Action = returnAction("POST")
-        val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(action)
-        requestBuilder.addFieldValue("testParam", "testValue")
-        requestBuilder.build()
+	@TestFactory
+	fun testPostBuilder() = listOf(
+		ContentType.FORM,
+		ContentType.JSON
+	).map { contentType ->
+		DynamicTest.dynamicTest("when Content-Type is $contentType") {
+			val requestBuilder: KSirenRequestBuilder<Request> = KSirenOkhttp3RequestBuilder(
+				createAction("POST", contentType),
+				KSirenMoshiWriter()
+			)
+			requestBuilder.addFieldValue("testParam", "testValue")
+			requestBuilder.build()
 
-        //As far as I know there isn't a good way to verify the requestbody
-        //however, doing so would only be testing Okhttp3 anyway. Ensuring
-        //this doesn't throw an exception should be good enough.
-        assertTrue(true)
-    }
+			//As far as I know there isn't a good way to verify the requestbody
+			//however, doing so would only be testing Okhttp3 anyway. Ensuring
+			//this doesn't throw an exception should be good enough.
+			Assertions.assertTrue(true)
+		}
+	}
 }

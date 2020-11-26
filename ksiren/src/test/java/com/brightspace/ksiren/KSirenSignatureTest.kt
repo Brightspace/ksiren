@@ -20,36 +20,36 @@ import kotlin.test.assertTrue
  * limitations under the License.
  */
 class KSirenSignatureTest {
-    @Test
-    fun testValidate() {
-        val signature: KSirenEntitySignature =
-                KSirenEntitySignature(
-                        listOf("order"),
-                        listOf(),
-                        listOf("self"),
-                        listOf("orderNumber", "itemCount", "status"))
+	@Test
+	fun testValidate() {
+		val signature: KSirenEntitySignature =
+			KSirenEntitySignature(
+				listOf("order"),
+				listOf(),
+				listOf("self"),
+				listOf("orderNumber", "itemCount", "status"))
 
 		val json: String = """{ "class": [ "order" ], "properties": { "orderNumber": 42, "itemCount": 3, "status": "pending" }, "links": [{ "rel": [ "self" ], "href": "http://api.x.io/orders/42" }] }"""
-        val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
-        signature.validate(entity)
+		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
+		signature.validate(entity)
 
-        //assuring the above doesn't throw an exception is good enough
-        assertTrue(true)
+		//assuring the above doesn't throw an exception is good enough
+		assertTrue(true)
 
-    }
+	}
 
-    @Test
-    fun testFailedValidate() {
-        val signature: KSirenEntitySignature =
-                KSirenEntitySignature(
-					listOf("order"),
-					listOf(),
-					listOf("self"),
-					listOf("orderNumber", "itemCount", "status", "anotherProperty"))
+	@Test
+	fun testFailedValidate() {
+		val signature: KSirenEntitySignature =
+			KSirenEntitySignature(
+				listOf("order"),
+				listOf(),
+				listOf("self"),
+				listOf("orderNumber", "itemCount", "status", "anotherProperty"))
 
 		val json: String = """{ "class": [ "order" ], "properties": { "orderNumber": 42, "itemCount": 3, "status": "pending" }, "links": [{ "rel": [ "self" ], "href": "http://api.x.io/orders/42" }] }"""
 
-        val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
-        assertFails { signature.validate(entity) }
-    }
+		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
+		assertFails { signature.validate(entity) }
+	}
 }

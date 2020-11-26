@@ -20,16 +20,16 @@ import kotlin.test.assertTrue
  * limitations under the License.
  */
 class EntityTest {
-    @Test
-    fun expectEntity() {
+	@Test
+	fun expectEntity() {
 		val json = """{ "class": [ "order" ], "properties": { "orderNumber": "42", "itemCount": "3", "status": "pending" }, "links": [{ "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }] }"""
 
-        val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
-        assertTrue(entity.actions.isEmpty())
-        assertTrue(entity.links.isNotEmpty())
-        assertTrue(entity.properties.size == 3)
-        assertEquals(listOf("order"), entity.classes)
-    }
+		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
+		assertTrue(entity.actions.isEmpty())
+		assertTrue(entity.links.isNotEmpty())
+		assertTrue(entity.properties.size == 3)
+		assertEquals(listOf("order"), entity.classes)
+	}
 
 	@Test
 	fun expectHandledNulls() {

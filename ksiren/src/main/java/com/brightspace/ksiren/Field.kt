@@ -19,7 +19,7 @@ data class Field(
 	val name: String,
 	val classes: List<String> = listOf(),
 	val type: String = "text",
-	val value: String?) : JsonSerializable {
+	var value: String?) {
 
 	companion object {
 
@@ -33,7 +33,7 @@ data class Field(
 			while (reader.hasNext()) {
 				when (reader.nextName()) {
 					"name" -> {
-						conditionalRead(reader) {name = it}
+						conditionalRead(reader) { name = it }
 					}
 					"class" -> {
 						reader.beginArray()
@@ -59,13 +59,11 @@ data class Field(
 			return validate(finishedField)
 		}
 
-		fun validate(obj: Field): Field {
+		private fun validate(obj: Field): Field {
 			if (obj.name == "") {
 				throw KSirenException.ValidationException("Field parsing failed, missing name value.")
 			}
 			return obj
 		}
 	}
-
-	override fun toJson() = JsonUtils.toJson(this)
 }

@@ -19,7 +19,7 @@ import com.google.gson.stream.JsonReader
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KSirenGsonAdapter(val gsonReader: JsonReader) : KSirenJsonReader() {
+class KSirenGsonReader(private val gsonReader: JsonReader) : KSirenJsonReader() {
 	override fun beginObject() {
 		gsonReader.beginObject()
 	}

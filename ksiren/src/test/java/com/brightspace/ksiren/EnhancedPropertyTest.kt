@@ -30,7 +30,7 @@ class EnhancedPropertyTest {
 	fun testArrayProperty() {
 		val arrayName = "arrayProperty"
 		val arrayElements = listOf("a", "b", "c").map(::StringValue)
-		val arrayElementsJson = arrayElements.joinToString { "\"${it.stringValue}\""}
+		val arrayElementsJson = arrayElements.joinToString { "\"${it.stringValue}\"" }
 		val json = """{"properties": { "$arrayName": [$arrayElementsJson] } }"""
 		val entity = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
@@ -50,7 +50,8 @@ class EnhancedPropertyTest {
 			expected = mapOf(objectName to ObjectValue(objectProperties)))
 	}
 
-	@Test fun testBooleanInArrayProperty() {
+	@Test
+	fun testBooleanInArrayProperty() {
 		val arrayName = "arrayProperty"
 		val nestedArrayElements = listOf(true, false).map { BooleanValue.from(it) }
 		val nestedArrayElementsJson = nestedArrayElements.joinToString { it.booleanValue.toString() }
@@ -65,7 +66,7 @@ class EnhancedPropertyTest {
 	fun testArrayInArrayProperty() {
 		val arrayName = "arrayProperty"
 		val nestedArrayElements = listOf("a", "b", "c").map(::StringValue)
-		val nestedArrayElementsJson = nestedArrayElements.joinToString { "\"${it.stringValue}\""}
+		val nestedArrayElementsJson = nestedArrayElements.joinToString { "\"${it.stringValue}\"" }
 		val json = """{"properties": { "$arrayName": [[$nestedArrayElementsJson]] } }"""
 		val entity = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
@@ -85,7 +86,8 @@ class EnhancedPropertyTest {
 			expected = mapOf(arrayName to ArrayValue(listOf(ObjectValue(nestedObjectProperties)))))
 	}
 
-	@Test fun testBooleanInObjectProperty() {
+	@Test
+	fun testBooleanInObjectProperty() {
 		val objectName = "objectProperty"
 		val nestedObjectProperties = mapOf("trueProperty" to BooleanValue.TRUE, "falseProperty" to BooleanValue.FALSE)
 		val nestedObjectJson = nestedObjectProperties.entries.joinToString { "\"${it.key}\": ${it.value.booleanValue}" }
@@ -101,7 +103,7 @@ class EnhancedPropertyTest {
 		val objectName = "objectProperty"
 		val nestedArrayName = "nestedArrayProperty"
 		val nestedArrayElements = listOf("a", "b", "c").map(::StringValue)
-		val nestedArrayElementsJson = nestedArrayElements.joinToString { "\"${it.stringValue}\""}
+		val nestedArrayElementsJson = nestedArrayElements.joinToString { "\"${it.stringValue}\"" }
 		val json = """{"properties": { "$objectName": {"$nestedArrayName": [$nestedArrayElementsJson] } } }"""
 		val entity = Entity.fromJson(json.toKSirenJsonReader())
 		assertEquals(
