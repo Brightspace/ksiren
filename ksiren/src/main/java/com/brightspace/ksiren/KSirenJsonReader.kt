@@ -44,6 +44,7 @@ abstract class KSirenJsonReader {
 
 	abstract fun nextStringImpl(): String
 	abstract fun nextBoolean(): Boolean
+	abstract fun skipValue()
 	abstract protected fun nextNull()
 
 }

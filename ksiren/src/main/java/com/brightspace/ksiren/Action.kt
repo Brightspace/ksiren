@@ -68,6 +68,9 @@ data class Action(
 						}
 						reader.endArray()
 					}
+					else -> {
+						reader.skipValue()
+					}
 				}
 			}
 			reader.endObject()

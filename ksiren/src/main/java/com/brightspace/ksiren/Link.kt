@@ -57,7 +57,9 @@ data class Link(
 					"type" -> {
 						type = reader.nextString()
 					}
-
+					else -> {
+						reader.skipValue()
+					}
 				}
 			}
 			reader.endObject()

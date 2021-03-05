@@ -74,6 +74,14 @@ class ActionTest {
 	}
 
 	@Test
+	fun ignoreAdditionalPropertiesTest() {
+		val json = """{ "name": "add-item", "href": "http://api.x.io/orders/42/items", "min": 5.0, "max": 60, "extra": "stuff", "bar": true }"""
+		val action: Action = Action.fromJson(json.toKSirenJsonReader())
+		assertEquals("add-item", action.name)
+		assertEquals("http://api.x.io/orders/42/items", action.href)
+	}
+
+	@Test
 	fun expectEscapedFieldString() {
 		val action = createJsonAction(listOf(Field("escapedString", listOf(), "text", stringRequiringJsonEscape)))
 		val actionJson = action.toJson(KSirenMoshiWriter())
