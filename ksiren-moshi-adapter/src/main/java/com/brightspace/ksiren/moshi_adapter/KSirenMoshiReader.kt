@@ -44,6 +44,10 @@ class KSirenMoshiReader(val moshiReader: JsonReader) : KSirenJsonReader() {
 		return moshiReader.nextName()
 	}
 
+	override fun skipValue() {
+		return moshiReader.skipValue()
+	}
+
 	override fun nextStringImpl(): String {
 		try {
 			return moshiReader.nextString()

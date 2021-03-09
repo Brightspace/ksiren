@@ -31,4 +31,12 @@ class LinkTest {
 		assertTrue(link.hasClass("link"))
 		assertFalse(link.hasClass("notLink"))
 	}
+
+	@Test
+	fun ignoreAdditionalPropertiesTest() {
+		val json = """{ "rel": [ "self" ], "href": "http://api.x.io/orders/42", "min": 5.0, "max": 60, "extra": "stuff", "bar": true }"""
+		val link: Link = Link.fromJson(json.toKSirenJsonReader())
+		assertEquals(listOf("self"), link.rels)
+		assertEquals("http://api.x.io/orders/42", link.href)
+	}
 }

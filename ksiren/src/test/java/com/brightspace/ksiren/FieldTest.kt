@@ -58,6 +58,14 @@ class FieldTest {
 	}
 
 	@Test
+	fun ignoreAdditionalPropertyTest() {
+		val field: Field = Field.fromJson("""{ "name": "expressShipping", "min": 5.0, "max": 60, "extra": "stuff", "bar": true }""".toKSirenJsonReader())
+		assertEquals("expressShipping", field.name)
+		assertEquals("text", field.type)
+		assertEquals(null, field.value)
+	}
+
+	@Test
 	fun expectJsonException() {
 		try {
 			Field.fromJson("""{ "name": "orderNumber" "type": "hidden", "value": "42" }""".toKSirenJsonReader())

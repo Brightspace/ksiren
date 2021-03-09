@@ -110,6 +110,9 @@ data class Entity internal constructor(
 					"href" -> {
 						href = reader.nextString()
 					}
+					else -> {
+						reader.skipValue()
+					}
 				}
 			}
 			reader.endObject()

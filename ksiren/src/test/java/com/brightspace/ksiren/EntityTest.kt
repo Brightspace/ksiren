@@ -70,6 +70,13 @@ class EntityTest {
 	}
 
 	@Test
+	fun ignoreAdditionalPropertiesTest() {
+		val json = """{ "title": "entity-title", "min": 5.0, "max": 60, "extra": "stuff", "bar": true }"""
+		val entity: Entity = Entity.fromJson(json.toKSirenJsonReader())
+		assertEquals("entity-title", entity.title)
+	}
+
+	@Test
 	fun expectHandleBooleanAsAsString() {
 		val truePropertyName = "trueProperty"
 		val falsePropertyName = "falseProperty"

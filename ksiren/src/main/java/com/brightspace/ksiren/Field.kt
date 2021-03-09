@@ -50,7 +50,9 @@ data class Field(
 							{ it.nextString() },
 							{ it.nextBoolean().toString() },
 							{ readAndReserializeArray(it) })
-
+					}
+					else -> {
+						reader.skipValue()
 					}
 				}
 			}

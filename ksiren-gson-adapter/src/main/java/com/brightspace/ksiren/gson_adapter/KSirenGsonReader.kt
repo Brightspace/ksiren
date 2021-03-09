@@ -52,6 +52,10 @@ class KSirenGsonReader(private val gsonReader: JsonReader) : KSirenJsonReader() 
 		return gsonReader.nextBoolean()
 	}
 
+	override fun skipValue() {
+		return gsonReader.skipValue()
+	}
+
 	override fun nextNull() {
 		gsonReader.nextNull()
 	}
