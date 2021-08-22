@@ -5,7 +5,7 @@ env:
   GRADLE_OPTS: -Xmx3200m -XX:+HeapDumpOnOutOfMemoryError -Dkotlin.incremental=false -Dkotlin.compiler.execution.strategy="in-process" -Dorg.gradle.daemon=false
 
 jobs:
-  run-gradle-task:
+  test:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
