@@ -1,0 +1,25 @@
+on: [push]
+
+env:
+  COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+  GRADLE_OPTS: -Xmx3200m -XX:+HeapDumpOnOutOfMemoryError -Dkotlin.incremental=false -Dkotlin.compiler.execution.strategy="in-process" -Dorg.gradle.daemon=false
+
+jobs:
+  run-gradle-task:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: Brightspace/third-party-actions@actions/checkout
+
+    - name: Setup Java
+      uses: Brightspace/third-party-actions@actions/setup-java
+      with:
+        java-version: '8'
+
+    - name: Run Tests
+      run: |
+        ./gradlew assemble
+        ./gradlew check
+
+    - name: Publish Coveralls Report
+      run: ./gradlew jacocoTestReport coveralls
