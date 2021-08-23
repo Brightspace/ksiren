@@ -31,7 +31,9 @@ class KSirenOkhttp3RequestBuilder(wrappedAction: Action, private val writer: KSi
 			when (action.method) {
 				"GET" -> {
 					action.fields.forEach {
-						urlBuilder.addQueryParameter(it.name, it.value)
+						if (it.value != null ) {
+							urlBuilder.addQueryParameter(it.name, it.value)
+						}
 					}
 					requestBuilder.get()
 				}
