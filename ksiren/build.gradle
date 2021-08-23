@@ -36,25 +36,6 @@ coveralls {
 	jacocoReportPath = "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
 }
 
-bintray {
-	user = System.getenv('BINTRAY_USER')
-	key = System.getenv('BINTRAY_KEY')
-	publications = ['MyPublication']
-	pkg {
-		repo = artifactName
-		name = artifactName
-		userOrg = 'brightspace'
-		licenses = ['Apache-2.0']
-		vcsUrl = vcsUrlSetting
-		version {
-			name = versionValue
-			desc = description
-			released = new Date()
-			vcsTag = versionValue
-		}
-	}
-}
-
 // Create the pom configuration:
 def pomConfig = {
 	licenses {

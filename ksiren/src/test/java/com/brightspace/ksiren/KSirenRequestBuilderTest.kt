@@ -2,12 +2,16 @@ package com.brightspace.ksiren
 
 import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriter
 import com.brightspace.ksiren.okhttp3_request_builder.KSirenOkhttp3RequestBuilder
+import okhttp3.MultipartBody
 import okhttp3.Request
+import okio.Okio
 import org.junit.Test
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
+import java.io.ByteArrayOutputStream
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 /**
  * Copyright 2017 D2L Corporation
@@ -34,7 +38,11 @@ class KSirenRequestBuilderTest {
 			href = "http://www.example.com",
 			title = "title",
 			type = contentType,
-			fields = listOf(Field("testParam", listOf(), "text", null)))
+			fields = listOf(
+				Field("testParam", listOf(), "text", null),
+				Field("unpopulatedParam", listOf(), "text", null)
+			)
+		)
 	}
 
 	@Test
@@ -58,12 +66,37 @@ class KSirenRequestBuilderTest {
 				KSirenMoshiWriter()
 			)
 			requestBuilder.addFieldValue("testParam", "testValue")
-			requestBuilder.build()
 
-			//As far as I know there isn't a good way to verify the requestbody
-			//however, doing so would only be testing Okhttp3 anyway. Ensuring
-			//this doesn't throw an exception should be good enough.
-			Assertions.assertTrue(true)
+			val res = requestBuilder.build()
+
+			when (contentType) {
+				ContentType.JSON -> {
+					assertEquals("http://www.example.com/?testParam=testValue", res.url().toString())
+				}
+				ContentType.FORM -> {
+					assertEquals("http://www.example.com/", res.url().toString())
+					assertTrue(res.body() is MultipartBody)
+
+					if (res.body() is MultipartBody) {
+						val body = res.body() as MultipartBody
+
+						val outputStream = ByteArrayOutputStream()
+						val outputSink = Okio.sink(outputStream)
+						val contentSink = Okio.buffer(outputSink)
+
+						assertEquals(1, body.parts().size)
+						assertEquals("form-data; name=\"testParam\"", body.part(0).headers()?.get("Content-Disposition"))
+
+						body.part(0).body().writeTo(contentSink)
+						contentSink.flush()
+
+						assertEquals("testValue", outputStream.toString())
+					}
+				}
+				else -> {
+					fail("Unknown Content-Type: ${contentType}")
+				}
+			}
 		}
 	}
 }
