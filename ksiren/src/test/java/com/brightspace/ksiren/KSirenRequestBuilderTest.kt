@@ -4,7 +4,6 @@ import com.brightspace.ksiren.moshi_adapter.KSirenMoshiWriter
 import com.brightspace.ksiren.okhttp3_request_builder.KSirenOkhttp3RequestBuilder
 import okhttp3.MultipartBody
 import okhttp3.Request
-import okio.BufferedSink
 import okio.Okio
 import org.junit.Test
 import org.junit.jupiter.api.DynamicTest
@@ -86,7 +85,7 @@ class KSirenRequestBuilderTest {
 						val contentSink = Okio.buffer(outputSink)
 
 						assertEquals(1, body.parts().size)
-						assertEquals("Content-Disposition: form-data; name=\"testParam\"\n", body.part(0).headers().toString())
+						assertEquals("form-data; name=\"testParam\"", body.part(0).headers()?.get("Content-Disposition"))
 
 						body.part(0).body().writeTo(contentSink)
 						contentSink.flush()
