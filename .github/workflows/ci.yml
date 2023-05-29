@@ -1,4 +1,6 @@
-on: [push]
+on: 
+  workflow_dispatch:
+  push:
 
 env:
   COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
