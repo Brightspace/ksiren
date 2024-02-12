@@ -2,8 +2,7 @@ on:
   workflow_dispatch:
   push:
 
-env:
-  COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+env:  
   GRADLE_OPTS: -Xmx3200m -XX:+HeapDumpOnOutOfMemoryError -Dkotlin.incremental=false -Dkotlin.compiler.execution.strategy="in-process" -Dorg.gradle.daemon=false
 
 jobs:
@@ -24,5 +23,5 @@ jobs:
         ./gradlew assemble
         ./gradlew check
 
-    - name: Publish Coveralls Report
-      run: ./gradlew jacocoTestReport coveralls
+    - name: Generate Report
+      run: ./gradlew jacocoTestReport
