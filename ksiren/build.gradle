@@ -1,5 +1,4 @@
 apply plugin: 'jacoco'
-apply plugin: "com.github.kt3k.coveralls"
 
 def group = "com.brightspace.ksiren"
 def artifactName = "ksiren"
@@ -27,13 +26,9 @@ dependencies {
 
 jacocoTestReport {
 	reports {
-		xml.enabled = true // coveralls plugin depends on xml format report
+		xml.enabled = true // coveralls depended on XML format (no more coveralls, but leave for other reporters)
 		html.enabled = true
 	}
-}
-
-coveralls {
-	jacocoReportPath = "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
 }
 
 // Create the pom configuration:
